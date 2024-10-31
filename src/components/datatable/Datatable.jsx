@@ -4,8 +4,6 @@ import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
 	collection,
-	getDocs,
-	deleteDoc,
 	doc,
 	onSnapshot,
 	writeBatch,
@@ -15,7 +13,6 @@ import { db, companyName } from "../../firebase";
 
 const Datatable = ({ collectionName, columns }) => {
 	const [data, setData] = useState([]);
-
 	useEffect(() => {
 		// LISTEN (REALTIME)
 		const unsub = onSnapshot(
@@ -39,6 +36,8 @@ const Datatable = ({ collectionName, columns }) => {
 
 	const handleDelete = async (id) => {
 		try {
+			const batch = writeBatch(db);
+
 			// Reference to the document in the global collection
 			const globalDocRef = doc(
 				db,
@@ -48,33 +47,38 @@ const Datatable = ({ collectionName, columns }) => {
 				id
 			);
 
-			// Fetch the invoice to get the customerId
-			const docSnap = await getDoc(globalDocRef);
-			if (!docSnap.exists()) {
-				console.error("Invoice document not found");
-				return;
-			}
-			const { customerId } = docSnap.data();
-			if (!customerId) {
-				console.error("Customer ID not found in invoice document");
-				return;
+			// This condition is just for getting customerId using invoiceId
+			if (collectionName !== "customers") {
+				// Fetch the invoice to get the customerId
+				const docSnap = await getDoc(globalDocRef);
+				if (!docSnap.exists()) {
+					console.error("Invoice document not found");
+					return;
+				}
+
+				const { customerId } = docSnap.data();
+
+				if (!customerId) {
+					console.error("Customer ID not found in invoice document");
+					return;
+				}
+
+				// Reference to the document in the customer's subcollection
+				const customerDocRef = doc(
+					db,
+					companyName,
+					"management",
+					"customers",
+					customerId,
+					collectionName,
+					id
+				);
+
+				batch.delete(customerDocRef); // Delete from customer's subcollection
 			}
 
-			// Reference to the document in the customer's subcollection
-			const customerDocRef = doc(
-				db,
-				companyName,
-				"management",
-				"customers",
-				customerId,
-				collectionName,
-				id
-			);
-
-			// Batch delete for both global and customer-specific documents
-			const batch = writeBatch(db);
+			// Batch delete for both global dpcuments
 			batch.delete(globalDocRef); // Delete from global collection
-			batch.delete(customerDocRef); // Delete from customer's subcollection
 
 			// Commit the batch delete
 			await batch.commit();

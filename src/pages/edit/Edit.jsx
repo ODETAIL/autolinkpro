@@ -8,7 +8,6 @@ import { useNavigate, useParams } from "react-router-dom";
 
 const Edit = ({ inputs, title, collectionName }) => {
 	const [data, setData] = useState(null);
-	const [formData, setFormData] = useState({});
 	const { userId } = useParams();
 	const navigate = useNavigate();
 
@@ -26,7 +25,6 @@ const Edit = ({ inputs, title, collectionName }) => {
 
 				if (docSnap.exists()) {
 					setData(docSnap.data());
-					setFormData(docSnap.data()); // Initialize formData with existing data
 				} else {
 					setData({ error: "Document not found" });
 				}
@@ -42,8 +40,8 @@ const Edit = ({ inputs, title, collectionName }) => {
 		const id = e.target.id;
 		const value = e.target.value;
 
-		setFormData((prevFormData) => ({
-			...prevFormData,
+		setData((prevData) => ({
+			...prevData,
 			[id]: value,
 		}));
 	};
@@ -59,7 +57,7 @@ const Edit = ({ inputs, title, collectionName }) => {
 				userId
 			);
 			await updateDoc(docRef, {
-				...formData,
+				...data,
 				timeStamp: serverTimestamp(),
 			});
 			navigate(-1);
@@ -86,7 +84,7 @@ const Edit = ({ inputs, title, collectionName }) => {
 										<input
 											id={input.id}
 											type={input.type}
-											value={formData[input.id] || ""}
+											value={data[input.id] || ""}
 											placeholder={input.placeholder}
 											onChange={handleInput}
 										/>

@@ -36,7 +36,7 @@ const View = ({ collectionName }) => {
 		};
 
 		fetchData();
-	}, []);
+	}, [collectionName, employeeId]);
 
 	return (
 		<div className="single">
