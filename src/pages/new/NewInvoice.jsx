@@ -243,6 +243,11 @@ const NewInvoice = ({ inputs, title, collectionName }) => {
 													}
 													onChange={handleInput}
 													value={data[input.id] || ""}
+													defaultValue={
+														data[
+															input.defaultValue
+														] || ""
+													}
 												/>
 											)}
 									</div>

@@ -6,9 +6,10 @@ import Datatable from "../../components/datatable/Datatable";
 const List = ({ collectionName, columns, customerId }) => {
 	return (
 		<div className="list">
-			<Sidebar />
+			{!customerId && <Sidebar />}
 			<div className="listContainer">
-				<Navbar />
+				{!customerId && <Navbar />}
+
 				<Datatable
 					collectionName={collectionName}
 					columns={columns}

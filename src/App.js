@@ -27,6 +27,7 @@ import ViewInvoice from "./pages/view/ViewInvoice";
 import Calendar from "./pages/calendar/Calendar";
 import NewAppointment from "./pages/new/NewAppointment";
 import ViewCustomer from "./pages/view/ViewCustomer";
+import EditCustomer from "./pages/edit/EditCustomer";
 
 function App() {
 	const { darkMode } = useContext(DarkModeContext);
@@ -142,10 +143,10 @@ function App() {
 								}
 							/>
 							<Route
-								path="edit/:userId"
+								path="edit/:customerId"
 								element={
 									<RequireAuth>
-										<Edit
+										<EditCustomer
 											inputs={customerInputs}
 											title="Edit Customer"
 											collectionName="customers"

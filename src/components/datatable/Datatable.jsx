@@ -10,13 +10,17 @@ import {
 	getDoc,
 } from "firebase/firestore";
 import { db, companyName } from "../../firebase";
+import { invoiceCustomerViewColumns } from "../../datatablesource";
 
-const Datatable = ({ collectionName, columns }) => {
+const Datatable = ({ collectionName, columns, customerId }) => {
 	const [data, setData] = useState([]);
 	useEffect(() => {
 		// LISTEN (REALTIME)
+		const docRef = customerId
+			? `${companyName}/management/${collectionName}/${customerId}/invoices`
+			: `${companyName}/management/${collectionName}`;
 		const unsub = onSnapshot(
-			collection(db, `${companyName}/management/${collectionName}`),
+			collection(db, docRef),
 			(snapShot) => {
 				let list = [];
 				snapShot.docs.forEach((doc) => {
@@ -32,7 +36,7 @@ const Datatable = ({ collectionName, columns }) => {
 		return () => {
 			unsub();
 		};
-	}, [collectionName]);
+	}, [collectionName, customerId]);
 
 	const handleDelete = async (id) => {
 		try {
@@ -121,20 +125,27 @@ const Datatable = ({ collectionName, columns }) => {
 			},
 		},
 	];
+
+	const customerViewColumns = customerId
+		? invoiceCustomerViewColumns.concat(actionColumn)
+		: columns.concat(actionColumn);
 	return (
 		<div className="datatable">
-			<div className="datatableTitle">
-				Add New{" "}
-				{collectionName.charAt(0).toUpperCase() +
-					collectionName.slice(1)}
-				<Link to={`/${collectionName}/new`} className="link">
-					Add New
-				</Link>
-			</div>
+			{!customerId && (
+				<div className="datatableTitle">
+					Add New{" "}
+					{collectionName.charAt(0).toUpperCase() +
+						collectionName.slice(1)}
+					<Link to={`/${collectionName}/new`} className="link">
+						Add New
+					</Link>
+				</div>
+			)}
+
 			<DataGrid
 				className="datagrid"
 				rows={data}
-				columns={columns.concat(actionColumn)}
+				columns={customerViewColumns}
 				pageSize={9}
 				rowsPerPageOptions={[9]}
 				checkboxSelection

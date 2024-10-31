@@ -6,9 +6,9 @@ import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
 import { db, companyName } from "../../firebase";
 import { useNavigate, useParams } from "react-router-dom";
 
-const Edit = ({ inputs, title, collectionName }) => {
+const EditCustomer = ({ inputs, title, collectionName }) => {
 	const [data, setData] = useState({});
-	const { userId } = useParams();
+	const { customerId } = useParams();
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -19,9 +19,8 @@ const Edit = ({ inputs, title, collectionName }) => {
 					companyName,
 					"management",
 					collectionName,
-					userId
+					customerId
 				);
-				console.log(docRef);
 				const docSnap = await getDoc(docRef);
 
 				if (docSnap.exists()) {
@@ -35,7 +34,7 @@ const Edit = ({ inputs, title, collectionName }) => {
 		};
 
 		fetchData();
-	}, [collectionName, userId]);
+	}, [collectionName, customerId]);
 
 	const handleInput = (e) => {
 		const id = e.target.id;
@@ -55,7 +54,7 @@ const Edit = ({ inputs, title, collectionName }) => {
 				companyName,
 				"management",
 				collectionName,
-				userId
+				customerId
 			);
 			await updateDoc(docRef, {
 				...data,
@@ -80,15 +79,25 @@ const Edit = ({ inputs, title, collectionName }) => {
 						<form onSubmit={handleEdit}>
 							<div className="formContent">
 								{inputs.map((input) => (
-									<div className="formInput" key={input?.id}>
-										<label>{input?.label}</label>
-										<input
-											id={input?.id}
-											type={input?.type}
-											value={data[input?.id] || ""}
-											placeholder={input?.placeholder}
-											onChange={handleInput}
-										/>
+									<div className="formInput" key={input.id}>
+										<label>{input.label}</label>
+										{input.id === "notes" ? (
+											<textarea
+												id={input.id}
+												value={data[input.id] || ""}
+												placeholder={input.placeholder}
+												onChange={handleInput}
+												rows={5} // Set initial height of the textarea
+											/>
+										) : (
+											<input
+												id={input.id}
+												type={input.type}
+												value={data[input.id] || ""}
+												placeholder={input.placeholder}
+												onChange={handleInput}
+											/>
+										)}
 									</div>
 								))}
 							</div>
@@ -101,4 +110,4 @@ const Edit = ({ inputs, title, collectionName }) => {
 	);
 };
 
-export default Edit;
+export default EditCustomer;

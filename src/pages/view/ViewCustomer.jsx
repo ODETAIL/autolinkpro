@@ -2,11 +2,12 @@ import "./view.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import Chart from "../../components/chart/Chart";
-import List from "../../components/table/Table";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { companyName, db } from "../../firebase";
 import { Link, useParams } from "react-router-dom";
+import List from "../list/List";
+import { invoiceColumns } from "../../datatablesource";
 
 const ViewCustomer = ({ collectionName }) => {
 	const [data, setData] = useState({});
@@ -63,34 +64,52 @@ const ViewCustomer = ({ collectionName }) => {
 								className="itemImg"
 							/>
 							<div className="details">
-								<h1 className="itemTitle">
-									{data?.displayName}
-								</h1>
-								<div className="detailItem">
-									<span className="itemKey">Email:</span>
-									<span className="itemValue">
-										{data?.email}
+								<div className="titleWrapper">
+									<h1 className="itemTitle">
+										{data?.displayName}
+									</h1>
+									<span className="companyTitle">
+										{data?.companyName}
 									</span>
 								</div>
-								<div className="detailItem">
-									<span className="itemKey">Phone:</span>
-									<span className="itemValue">
-										{data?.phone?.replace(
-											/^(\d{3})(\d{3})(\d{4})$/,
-											"($1) $2-$3"
-										)}
-									</span>
+
+								<div className="detailWrapper">
+									<div className="detailItem">
+										<span className="itemKey">Email:</span>
+										<span className="itemValue">
+											{data?.email}
+										</span>
+									</div>
+									<div className="detailItem">
+										<span className="itemKey">Phone:</span>
+										<span className="itemValue">
+											{data?.phone?.replace(
+												/^(\d{3})(\d{3})(\d{4})$/,
+												"($1) $2-$3"
+											)}
+										</span>
+									</div>
+								</div>
+								<div className="detailWrapper">
+									<div className="detailItem">
+										<span className="itemKey">
+											Address:
+										</span>
+										<span className="itemValue">
+											{data?.streetAddress1}
+										</span>
+									</div>
+									<div className="detailItem">
+										<span className="itemKey">City:</span>
+										<span className="itemValue">
+											{data?.city}
+										</span>
+									</div>
 								</div>
 								<div className="detailItem">
-									<span className="itemKey">Address:</span>
+									<span className="itemKey">Notes:</span>
 									<span className="itemValue">
-										{data?.streetAddress1}
-									</span>
-								</div>
-								<div className="detailItem">
-									<span className="itemKey">City:</span>
-									<span className="itemValue">
-										{data?.city}
+										{data?.notes}
 									</span>
 								</div>
 							</div>
@@ -105,7 +124,12 @@ const ViewCustomer = ({ collectionName }) => {
 				</div>
 				<div className="bottom">
 					<h1 className="title">Last Transactions</h1>
-					<List customerId={customerId} />
+					{/* <List customerId={customerId} /> */}
+					<List
+						collectionName={collectionName}
+						columns={invoiceColumns}
+						customerId={customerId}
+					/>
 				</div>
 			</div>
 		</div>

@@ -39,7 +39,7 @@
 	.cellWithStatus {
 		padding: 7px;
 		border-radius: 10px;
-		text-transform: capitalize;
+		text-transform: uppercase;
 		margin: 0 auto;
 
 		&.paid {
@@ -47,8 +47,8 @@
 			color: green;
 		}
 		&.draft {
-			background-color: rgba(255, 217, 0, 0.05);
-			color: goldenrod;
+			background-color: rgba(231, 231, 231, 0.05);
+			color: lightgray;
 		}
 		&.overdue {
 			background-color: rgba(255, 0, 0, 0.05);

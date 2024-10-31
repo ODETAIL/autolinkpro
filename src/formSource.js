@@ -95,7 +95,7 @@ export const customerInputs = [
 		id: "notes",
 		label: "Notes",
 		type: "text",
-		placeholder: "Customer notes",
+		placeholder: "Customer notes...",
 	},
 ];
 
@@ -138,6 +138,7 @@ export const invoiceInputs = [
 		type: "select",
 		placeholder: "Draft",
 		options: ["draft", "paid", "overdue"],
+		defaultValue: "draft",
 	},
 	{
 		id: "payment",
@@ -146,7 +147,7 @@ export const invoiceInputs = [
 		placeholder: "Mastercard",
 		options: [
 			"Debit",
-			"Mc",
+			"Mastercard",
 			"Cash",
 			"Amex",
 			"Visa",
