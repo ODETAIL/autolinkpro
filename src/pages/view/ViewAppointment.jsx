@@ -8,9 +8,9 @@ import { Link, useParams } from "react-router-dom";
 import { Divider } from "@mui/material";
 import { calculateGST, calculateSubtotal } from "../../helpers/helpers";
 
-const ViewInvoice = ({ collectionName }) => {
+const ViewAppointment = ({ collectionName }) => {
 	const [data, setData] = useState({});
-	const { invoiceUid } = useParams();
+	const { appointmentId } = useParams();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -21,7 +21,7 @@ const ViewInvoice = ({ collectionName }) => {
 						companyName,
 						"management",
 						collectionName,
-						invoiceUid
+						appointmentId
 					)
 				);
 				if (docSnap.exists()) {
@@ -36,7 +36,7 @@ const ViewInvoice = ({ collectionName }) => {
 		};
 
 		fetchData();
-	}, [collectionName, invoiceUid]);
+	}, [collectionName, appointmentId]);
 
 	return (
 		<div className="single">
@@ -93,7 +93,7 @@ const ViewInvoice = ({ collectionName }) => {
 					</div> */}
 					<div className="left">
 						<Link
-							to={`/${collectionName}/edit/${invoiceUid}`}
+							to={`/${collectionName}/edit/${appointmentId}`}
 							style={{ textDecoration: "none" }}
 						>
 							<div className="editButton">Edit</div>
@@ -210,4 +210,4 @@ const ViewInvoice = ({ collectionName }) => {
 	);
 };
 
-export default ViewInvoice;
+export default ViewAppointment;

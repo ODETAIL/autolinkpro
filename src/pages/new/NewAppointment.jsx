@@ -206,7 +206,6 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 										onChange={(e) =>
 											setCustomerName(e.target.value)
 										}
-										placeholder="Customer name"
 										required
 									/>
 								</div>
@@ -247,6 +246,11 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 													}
 													onChange={handleInput}
 													value={data[input.id] || ""}
+													required={
+														input.required
+															? input.required
+															: false
+													}
 												/>
 											)}
 									</div>

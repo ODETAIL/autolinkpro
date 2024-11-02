@@ -12,9 +12,9 @@ const Home = () => {
 			<div className="homeContainer">
 				<Navbar />
 				<div className="widgets">
-					<Widget type="employee" />
-					<Widget type="customer" />
-					<Widget type="invoice" />
+					<Widget type="employee" collectionName="employees" />
+					<Widget type="customer" collectionName="customers" />
+					<Widget type="invoice" collectionName="invoices" />
 					<Widget type="earning" />
 				</div>
 				<div className="charts">

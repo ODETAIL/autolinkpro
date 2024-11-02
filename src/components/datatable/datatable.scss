@@ -50,6 +50,10 @@
 			background-color: rgba(231, 231, 231, 0.05);
 			color: lightgray;
 		}
+		&.pending {
+			background-color: rgba(218, 165, 32, 0.05);
+			color: goldenrod;
+		}
 		&.overdue {
 			background-color: rgba(255, 0, 0, 0.05);
 			color: crimson;

@@ -7,19 +7,26 @@ import {
 	doc,
 	getDoc,
 	getDocs,
-	query,
 	serverTimestamp,
-	where,
+	setDoc,
 	writeBatch,
 } from "firebase/firestore";
 import { db, companyName } from "../../firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import { Chip, IconButton } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
+import { getCustomerByName } from "../../helpers/queries";
+import {
+	defaultCustomerData,
+	serviceType,
+	vehicleType,
+} from "../../helpers/defaultData";
 
-const EditInvoice = ({ inputs, title, collectionName }) => {
+const EditAppointment = ({ inputs, title, collectionName }) => {
 	const [data, setData] = useState({});
 	const [customerName, setCustomerName] = useState(""); // Store customer name
+	const [customerId, setCustomerId] = useState(""); // Store customer ID after creation or fetch
+	const [customerData, setCustomerData] = useState({});
 	const [newService, setNewService] = useState({
 		vtype: "",
 		name: "",
@@ -28,21 +35,8 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 	});
 	const [services, setServices] = useState([]);
 	const [isCustomService, setIsCustomService] = useState(false);
-	const { invoiceUid } = useParams();
+	const { appointmentId } = useParams();
 	const navigate = useNavigate();
-
-	const vehicleType = ["Suv", "Truck", "Sedan", "Minivan", "Convertible"];
-	const serviceType = [
-		"Add Custom",
-		"Windshield",
-		"Door Glass",
-		"Back Glass",
-		"Sunroof",
-		"Mirror",
-		"Quarter Glass",
-		"Chip Subscription",
-		"Warranty",
-	];
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -52,40 +46,15 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 					companyName,
 					"management",
 					collectionName,
-					invoiceUid
+					appointmentId
 				);
-
 				const docSnap = await getDoc(docRef);
 
 				if (docSnap.exists()) {
-					const currentInvoiceData = docSnap.data();
-
-					const appointmentsRef = collection(
-						db,
-						`${companyName}/management/appointments`
-					);
-					const q = query(
-						appointmentsRef,
-						where("invoiceId", "==", currentInvoiceData.invoiceId)
-					);
-					const appointmentSnapshot = await getDocs(q);
-					if (!appointmentSnapshot.empty) {
-						// Get the first matching document
-						const appointmentDoc = appointmentSnapshot.docs[0];
-						const currentAppointmentData = appointmentDoc.data();
-
-						setData({
-							...currentInvoiceData,
-							...currentAppointmentData,
-						});
-					} else {
-						console.log(
-							"No matching appointment found for this invoiceId."
-						);
-					}
-
-					setServices(currentInvoiceData.services);
-					setCustomerName(currentInvoiceData.displayName);
+					const currentAppointmentData = docSnap.data();
+					setData(currentAppointmentData);
+					setServices(currentAppointmentData.services);
+					setCustomerName(currentAppointmentData.displayName);
 				} else {
 					setData({ error: "Document not found" });
 				}
@@ -95,84 +64,13 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 		};
 
 		fetchData();
-	}, [collectionName, invoiceUid]);
+	}, [collectionName, appointmentId]);
 
 	const handleInput = (e) => {
 		const id = e.target.id;
 		const value = e.target.value;
 
-		setData((prevData) => ({
-			...prevData,
-			[id]: value,
-		}));
-	};
-
-	const handleEdit = async (e) => {
-		e.preventDefault();
-		try {
-			const docRef = doc(
-				db,
-				companyName,
-				"management",
-				collectionName,
-				invoiceUid
-			);
-
-			// Fetch current invoice to get customerId
-			const docSnap = await getDoc(docRef);
-			if (!docSnap.exists()) {
-				console.error("Invoice document not found");
-				return;
-			}
-			const currentInvoiceData = docSnap.data();
-			const customerId = currentInvoiceData.customerId; // Assuming customerId is stored in the document
-
-			if (!customerId) {
-				console.error("Customer ID not found in invoice document");
-				return;
-			}
-
-			// Prepare batch update to apply changes to both documents
-			const batch = writeBatch(db);
-
-			// Reference for the global invoices collection document
-			const globalInvoiceRef = doc(
-				db,
-				companyName,
-				"management",
-				collectionName,
-				invoiceUid
-			);
-
-			// Reference for the customer-specific invoices subcollection document
-			const customerInvoiceRef = doc(
-				db,
-				companyName,
-				"management",
-				"customers",
-				customerId,
-				collectionName,
-				invoiceUid
-			);
-
-			// Updated invoice data
-			const updatedInvoiceData = {
-				...data,
-				services,
-				timeStamp: serverTimestamp(),
-			};
-
-			// Update both documents in batch
-			batch.update(globalInvoiceRef, updatedInvoiceData);
-			batch.update(customerInvoiceRef, updatedInvoiceData);
-
-			// Commit the batch
-			await batch.commit();
-
-			navigate(-1);
-		} catch (err) {
-			console.error("Error updating document:", err);
-		}
+		setData({ ...data, [id]: value });
 	};
 
 	const handleServiceChange = (e, field) => {
@@ -199,6 +97,81 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 		setServices(services.filter((_, i) => i !== index));
 	};
 
+	// Fetch or create customer, then add invoice
+	const handleEdit = async (e) => {
+		e.preventDefault();
+
+		try {
+			let currentCustomerId = customerId;
+			let currentCustomerData = customerData;
+
+			// Check if customer exists by name
+			if (!currentCustomerId) {
+				const getCustomerQuery = getCustomerByName({
+					companyName,
+					customerName,
+				});
+				const querySnapshot = await getDocs(getCustomerQuery);
+
+				if (!querySnapshot.empty) {
+					// Customer exists, retrieve ID and details
+					const customerDoc = querySnapshot.docs[0];
+					currentCustomerId = customerDoc.id;
+					currentCustomerData = customerDoc.data();
+				}
+
+				// Set state with fetched or created customer data
+				setCustomerId(currentCustomerId);
+				setCustomerData(currentCustomerData);
+			}
+
+			// Reference for the global invoices collection
+			const globalInvoiceRef = doc(
+				collection(db, companyName, "management", "invoices")
+			);
+			// Reference for the customer's specific invoices subcollection
+			const customerInvoiceRef = doc(
+				collection(
+					db,
+					companyName,
+					"management",
+					"customers",
+					currentCustomerId,
+					"invoices"
+				),
+				globalInvoiceRef.id // Use the same ID for both documents
+			);
+
+			const appointmentRef = doc(
+				db,
+				companyName,
+				"management",
+				collectionName,
+				appointmentId
+			);
+
+			// Prepare the invoice data
+			const invoiceData = {
+				...data,
+				...currentCustomerData,
+				services,
+				customerId: currentCustomerId, // For easier reference in global invoices
+				timeStamp: serverTimestamp(),
+			};
+
+			const batch = writeBatch(db);
+			batch.update(globalInvoiceRef, invoiceData); // Add to global invoices collection
+			batch.update(customerInvoiceRef, invoiceData); // Add to customer-specific invoices subcollection
+			batch.update(appointmentRef, invoiceData);
+			// Commit the batch write
+			await batch.commit();
+
+			navigate(-1);
+		} catch (err) {
+			console.error("Error updating invoice:", err);
+		}
+	};
+
 	return (
 		<div className="new">
 			<Sidebar />
@@ -220,7 +193,6 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 										onChange={(e) =>
 											setCustomerName(e.target.value)
 										}
-										placeholder="Customer name"
 										required
 									/>
 								</div>
@@ -261,6 +233,11 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 													}
 													onChange={handleInput}
 													value={data[input.id] || ""}
+													required={
+														input.required
+															? input.required
+															: false
+													}
 												/>
 											)}
 									</div>
@@ -372,4 +349,4 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 	);
 };
 
-export default EditInvoice;
+export default EditAppointment;

@@ -6,10 +6,11 @@ import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalance
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import { useEffect, useState } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { db } from "../../firebase";
+import { companyName, db } from "../../firebase";
 import { CreditCardOutlined, SupervisorAccount } from "@mui/icons-material";
+import { Link } from "react-router-dom";
 
-const Widget = ({ type }) => {
+const Widget = ({ type, collectionName }) => {
 	const [amount, setAmount] = useState(null);
 	const [diff, setDiff] = useState(null);
 	let data;
@@ -19,7 +20,14 @@ const Widget = ({ type }) => {
 			data = {
 				title: "EMPLOYEES",
 				isMoney: false,
-				link: "See all employees",
+				link: (
+					<Link
+						to={`/${collectionName}`}
+						style={{ textDecoration: "none" }}
+					>
+						View all employees
+					</Link>
+				),
 				query: "employees",
 				icon: (
 					<SupervisorAccount
@@ -36,7 +44,15 @@ const Widget = ({ type }) => {
 			data = {
 				title: "CUSTOMERS",
 				isMoney: false,
-				link: "See all customers",
+				link: (
+					<Link
+						to={`/${collectionName}`}
+						style={{ textDecoration: "none" }}
+					>
+						View all customers
+					</Link>
+				),
+				query: "customers",
 				icon: (
 					<PersonOutlinedIcon
 						className="icon"
@@ -52,7 +68,15 @@ const Widget = ({ type }) => {
 			data = {
 				title: "INVOICES",
 				isMoney: false,
-				link: "View all invoices",
+				link: (
+					<Link
+						to={`/${collectionName}`}
+						style={{ textDecoration: "none" }}
+					>
+						View all invoices
+					</Link>
+				),
+				query: "invoices",
 				icon: (
 					<CreditCardOutlined
 						className="icon"
@@ -111,12 +135,12 @@ const Widget = ({ type }) => {
 			);
 
 			const lastMonthQuery = query(
-				collection(db, data.query),
+				collection(db, `${companyName}/management/${data.query}`),
 				where("timeStamp", "<=", today),
 				where("timeStamp", ">", lastMonth)
 			);
 			const prevMonthQuery = query(
-				collection(db, data.query),
+				collection(db, `${companyName}/management/${data.query}`),
 				where("timeStamp", "<=", lastMonth),
 				where("timeStamp", ">", prevMonth)
 			);

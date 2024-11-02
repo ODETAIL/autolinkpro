@@ -28,6 +28,7 @@ import Calendar from "./pages/calendar/Calendar";
 import NewAppointment from "./pages/new/NewAppointment";
 import ViewCustomer from "./pages/view/ViewCustomer";
 import EditCustomer from "./pages/edit/EditCustomer";
+import EditAppointment from "./pages/edit/EditAppointment";
 
 function App() {
 	const { darkMode } = useContext(DarkModeContext);
@@ -105,6 +106,18 @@ function App() {
 										<Calendar
 											collectionName="appointments"
 											title="Add New Appointment"
+										/>
+									</RequireAuth>
+								}
+							/>
+							<Route
+								path="edit/:appointmentId"
+								element={
+									<RequireAuth>
+										<EditAppointment
+											inputs={appointmentInputs}
+											title="Edit Appointment"
+											collectionName="appointments"
 										/>
 									</RequireAuth>
 								}

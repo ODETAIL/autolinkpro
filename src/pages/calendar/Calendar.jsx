@@ -7,7 +7,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import listPlugin from "@fullcalendar/list";
 import { useEffect, useRef, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
 	collection,
 	deleteDoc,
@@ -26,6 +26,7 @@ const Calendar = ({ collectionName, columns }) => {
 	const calendarRef = useRef(null);
 	const [data, setData] = useState({});
 	const [currentEvents, setCurrentEvents] = useState([]);
+	const navigate = useNavigate();
 
 	// Fetch and listen to events in real-time
 	useEffect(() => {
@@ -128,19 +129,31 @@ const Calendar = ({ collectionName, columns }) => {
 		}
 	};
 
-	const handleEventClick = (eventClickInfo) => {
-		const { title, start, end, extendedProps } = eventClickInfo.event;
-		console.log(eventClickInfo.event);
-		alert(`
-			Title: ${title}
-			Start: ${start.toLocaleString()}
-			End: ${end ? end.toLocaleString() : "N/A"}
-			Customer Name: ${extendedProps.displayName}
-			Code: ${extendedProps.code}
-			Email: ${extendedProps.email}
-			Phone Number: ${extendedProps.phone}
-			Notes: ${extendedProps.notes}
-		`);
+	const handleEventClick = async (eventClickInfo) => {
+		const currentEvent = eventClickInfo.event;
+		const invoiceId = currentEvent._def.extendedProps.invoiceId;
+
+		// Query Firestore to find the document with the matching `invoiceId`
+		const appointmentsRef = collection(
+			db,
+			`${companyName}/management/${collectionName}`
+		);
+		const q = query(appointmentsRef, where("invoiceId", "==", invoiceId));
+
+		try {
+			const querySnapshot = await getDocs(q);
+
+			if (!querySnapshot.empty) {
+				// Assume the first matching document is the one we need
+				const docSnapshot = querySnapshot.docs[0];
+				const docId = docSnapshot.id;
+				navigate(`/${collectionName}/edit/${docId}`);
+			} else {
+				console.error("No document found with invoiceId:", invoiceId);
+			}
+		} catch (error) {
+			console.error("Error updating event in Firestore:", error);
+		}
 	};
 
 	const handleDeleteAppointment = async (invoiceId) => {
@@ -180,17 +193,6 @@ const Calendar = ({ collectionName, columns }) => {
 		}
 	};
 
-	// const renderEventContent = (eventInfo) => (
-	// 	<div
-	// 		style={{
-	// 			backgroundColor:
-	// 				eventInfo.event.extendedProps.color || "#023e8a",
-	// 		}}
-	// 	>
-	// 		<b>{eventInfo.timeText}</b>
-	// 		<i>{eventInfo.event.title}</i>
-	// 	</div>
-	// );
 	return (
 		<div className="calendar">
 			<Sidebar />
