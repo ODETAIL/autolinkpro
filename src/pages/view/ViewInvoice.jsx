@@ -3,14 +3,19 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
-import { companyName, db } from "../../firebase";
+import { db } from "../../firebase";
 import { Link, useParams } from "react-router-dom";
 import { Divider } from "@mui/material";
 import { calculateGST, calculateSubtotal } from "../../helpers/helpers";
+import { useCompanyContext } from "../../context/CompanyContext";
+import InvoiceGenerator from "../../components/invoice/InvoiceGenerator";
+import { PDFDownloadLink } from "@react-pdf/renderer";
+import InvoiceDocument from "../../components/invoice/InvoiceDocument";
 
 const ViewInvoice = ({ collectionName }) => {
 	const [data, setData] = useState({});
 	const { invoiceUid } = useParams();
+	const { selectedCompany } = useCompanyContext();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -18,7 +23,7 @@ const ViewInvoice = ({ collectionName }) => {
 				const docSnap = await getDoc(
 					doc(
 						db,
-						companyName,
+						selectedCompany,
 						"management",
 						collectionName,
 						invoiceUid
@@ -36,7 +41,7 @@ const ViewInvoice = ({ collectionName }) => {
 		};
 
 		fetchData();
-	}, [collectionName, invoiceUid]);
+	}, [collectionName, invoiceUid, selectedCompany]);
 
 	return (
 		<div className="single">
@@ -44,53 +49,6 @@ const ViewInvoice = ({ collectionName }) => {
 			<div className="singleContainer">
 				<Navbar />
 				<div className="top">
-					{/* <div className="left">
-						<h1 className="title">Information</h1>
-						<div className="item">
-							<img
-								src={
-									data?.img
-										? data.img
-										: "https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
-								}
-								alt=""
-								className="itemImg"
-							/>
-							<div className="details">
-								<h1 className="itemTitle">
-									{data?.displayName}
-								</h1>
-								<div className="detailItem">
-									<span className="itemKey">Email:</span>
-									<span className="itemValue">
-										{data?.email}
-									</span>
-								</div>
-								<div className="detailItem">
-									<span className="itemKey">Phone:</span>
-									<span className="itemValue">
-										{data?.phone?.replace(
-											/^(\d{3})(\d{3})(\d{4})$/,
-											"($1) $2-$3"
-										)}
-									</span>
-								</div>
-								<div className="detailItem">
-									<span className="itemKey">Address:</span>
-									<span className="itemValue">
-										{data?.streetAddress1 ||
-											data?.streetAddress2}
-									</span>
-								</div>
-								<div className="detailItem">
-									<span className="itemKey">Warranty</span>
-									<span className="itemValue">
-										{data?.city}
-									</span>
-								</div>
-							</div>
-						</div>
-					</div> */}
 					<div className="left">
 						<Link
 							to={`/${collectionName}/edit/${invoiceUid}`}
@@ -98,7 +56,6 @@ const ViewInvoice = ({ collectionName }) => {
 						>
 							<div className="editButton">Edit</div>
 						</Link>
-
 						<div className="item">
 							<div className="details">
 								<h1 className="itemTitle">
@@ -141,7 +98,8 @@ const ViewInvoice = ({ collectionName }) => {
 													{service.name}
 												</span>
 												<span className="serviceItemValue">
-													{service.code} ()
+													{service.code} (
+													{data?.invoiceType})
 												</span>
 											</div>
 
@@ -200,6 +158,33 @@ const ViewInvoice = ({ collectionName }) => {
 											).toFixed(2)}
 										</span>
 									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div className="right">
+						<PDFDownloadLink
+							document={<InvoiceDocument invoiceData={data} />}
+							fileName={`invoice_${data.invoiceId}.pdf`}
+						>
+							{({ loading }) =>
+								loading ? (
+									"Preparing document..."
+								) : (
+									<div className="downloadButton">
+										Download
+									</div>
+								)
+							}
+						</PDFDownloadLink>
+
+						<div className="item">
+							<div className="details">
+								<h1 className="itemTitle">Invoice Preview</h1>
+								<div className="preview">
+									{data ? (
+										<InvoiceGenerator invoiceData={data} />
+									) : null}
 								</div>
 							</div>
 						</div>

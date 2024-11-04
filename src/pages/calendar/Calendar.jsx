@@ -18,20 +18,22 @@ import {
 	updateDoc,
 	where,
 } from "firebase/firestore";
-import { companyName, db } from "../../firebase";
+import { db } from "../../firebase";
 import { colors } from "../../helpers/defaultData";
 import { DeleteOutline } from "@mui/icons-material";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const Calendar = ({ collectionName, columns }) => {
 	const calendarRef = useRef(null);
 	const [data, setData] = useState({});
 	const [currentEvents, setCurrentEvents] = useState([]);
+	const { selectedCompany } = useCompanyContext();
 	const navigate = useNavigate();
 
 	// Fetch and listen to events in real-time
 	useEffect(() => {
 		const unsub = onSnapshot(
-			collection(db, `${companyName}/management/${collectionName}`),
+			collection(db, `${selectedCompany}/management/${collectionName}`),
 			(snapShot) => {
 				let events = [];
 				snapShot.docs.forEach((doc) => {
@@ -53,7 +55,7 @@ const Calendar = ({ collectionName, columns }) => {
 			}
 		);
 		return () => unsub();
-	}, [collectionName]);
+	}, [collectionName, selectedCompany]);
 
 	const addEventsToCalendar = (events) => {
 		const calendarApi = calendarRef.current.getApi();
@@ -82,7 +84,7 @@ const Calendar = ({ collectionName, columns }) => {
 		// Query Firestore to find the document with the matching `invoiceId`
 		const appointmentsRef = collection(
 			db,
-			`${companyName}/management/${collectionName}`
+			`${selectedCompany}/management/${collectionName}`
 		);
 		const q = query(appointmentsRef, where("invoiceId", "==", invoiceId));
 
@@ -102,7 +104,7 @@ const Calendar = ({ collectionName, columns }) => {
 				// Reference the document by its ID and update it
 				const eventRef = doc(
 					db,
-					`${companyName}/management/${collectionName}`,
+					`${selectedCompany}/management/${collectionName}`,
 					docId
 				);
 				await updateDoc(eventRef, modifiedEvent);
@@ -136,7 +138,7 @@ const Calendar = ({ collectionName, columns }) => {
 		// Query Firestore to find the document with the matching `invoiceId`
 		const appointmentsRef = collection(
 			db,
-			`${companyName}/management/${collectionName}`
+			`${selectedCompany}/management/${collectionName}`
 		);
 		const q = query(appointmentsRef, where("invoiceId", "==", invoiceId));
 
@@ -160,7 +162,7 @@ const Calendar = ({ collectionName, columns }) => {
 		// Query Firestore to find the document with the matching `invoiceId`
 		const appointmentsRef = collection(
 			db,
-			`${companyName}/management/${collectionName}`
+			`${selectedCompany}/management/${collectionName}`
 		);
 		const q = query(appointmentsRef, where("invoiceId", "==", invoiceId));
 
@@ -173,7 +175,7 @@ const Calendar = ({ collectionName, columns }) => {
 				// Reference the document by its ID and update it
 				const eventRef = doc(
 					db,
-					`${companyName}/management/${collectionName}`,
+					`${selectedCompany}/management/${collectionName}`,
 					docId
 				);
 

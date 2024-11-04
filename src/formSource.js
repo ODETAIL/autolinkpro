@@ -19,11 +19,11 @@ export const employeeInputs = [
 		label: "Password",
 		type: "password",
 	},
-	{
-		id: "streetAddress",
-		label: "Address",
-		type: "text",
-	},
+	// {
+	// 	id: "streetAddress",
+	// 	label: "Address",
+	// 	type: "text",
+	// },
 	{
 		id: "postalCode",
 		label: "Postal Code",
@@ -33,6 +33,12 @@ export const employeeInputs = [
 		id: "startDate",
 		label: "Start Date",
 		type: "date",
+	},
+	{
+		id: "access",
+		label: "Access",
+		options: ["admin", "user", "manager"],
+		type: "select",
 	},
 ];
 
@@ -146,6 +152,7 @@ export const appointmentInputs = [
 		type: "text",
 		required: true,
 	},
+
 	{
 		id: "start",
 		label: "Start Time",

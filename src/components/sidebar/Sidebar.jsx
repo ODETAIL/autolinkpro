@@ -15,15 +15,39 @@ import {
 	CalendarMonthOutlined,
 	SupervisorAccountOutlined,
 } from "@mui/icons-material";
+import { useCompanyContext } from "../../context/CompanyContext";
+import { AuthContext } from "../../context/AuthContext";
 
 const Sidebar = () => {
 	const { dispatch } = useContext(DarkModeContext);
+	const Auth = useContext(AuthContext);
+	const { companies, selectedCompany, setCompany } = useCompanyContext();
+
+	const handleCompanyChange = (e) => {
+		const selectedCompanyName = e.target.value;
+
+		const company = companies.find(
+			(company) => company === selectedCompanyName
+		);
+		setCompany(company);
+	};
+
 	return (
 		<div className="sidebar">
 			<div className="top">
-				<Link to="/" style={{ textDecoration: "none" }}>
-					<span className="logo">ODETAIL</span>
-				</Link>
+				<div style={{ textDecoration: "none" }}>
+					<select
+						onChange={handleCompanyChange}
+						value={selectedCompany}
+						className="company-dropdown"
+					>
+						{companies.map((company, index) => (
+							<option key={index} value={company}>
+								{company}
+							</option>
+						))}
+					</select>
+				</div>
 			</div>
 			<hr />
 			<div className="center">
@@ -87,7 +111,10 @@ const Sidebar = () => {
 						<span>Profile</span>
 					</li>
 					<li>
-						<ExitToAppIcon className="icon" />
+						<ExitToAppIcon
+							className="icon"
+							onClick={() => Auth.dispatch({ type: "LOGOUT" })}
+						/>
 						<span>Logout</span>
 					</li>
 				</ul>

@@ -5,12 +5,14 @@ import Chart from "../../components/chart/Chart";
 import List from "../../components/table/Table";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
-import { companyName, db } from "../../firebase";
+import { db } from "../../firebase";
 import { useParams } from "react-router-dom";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const View = ({ collectionName }) => {
 	const [data, setData] = useState({});
 	const { employeeId } = useParams();
+	const { selectedCompany } = useCompanyContext();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -18,7 +20,7 @@ const View = ({ collectionName }) => {
 				const docSnap = await getDoc(
 					doc(
 						db,
-						companyName,
+						selectedCompany,
 						"management",
 						collectionName,
 						employeeId
@@ -36,7 +38,7 @@ const View = ({ collectionName }) => {
 		};
 
 		fetchData();
-	}, [collectionName, employeeId]);
+	}, [collectionName, employeeId, selectedCompany]);
 
 	return (
 		<div className="single">

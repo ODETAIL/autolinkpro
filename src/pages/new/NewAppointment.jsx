@@ -11,7 +11,7 @@ import {
 	setDoc,
 	writeBatch,
 } from "firebase/firestore";
-import { db, companyName } from "../../firebase";
+import { db } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import { Chip, IconButton } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
@@ -24,6 +24,7 @@ import {
 	serviceType,
 	vehicleType,
 } from "../../helpers/defaultData";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const NewAppointment = ({ inputs, title, collectionName }) => {
 	const [data, setData] = useState({});
@@ -35,10 +36,12 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 		name: "",
 		code: "",
 		price: "",
+		quantity: "",
 	});
 	const [services, setServices] = useState([]);
 	const [isCustomService, setIsCustomService] = useState(false);
 	const navigate = useNavigate();
+	const { selectedCompany } = useCompanyContext();
 
 	const handleInput = (e) => {
 		const id = e.target.id;
@@ -61,7 +64,13 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 	const handleAddService = () => {
 		if (newService.name && newService.code && newService.price) {
 			setServices([...services, newService]);
-			setNewService({ vtype: "", name: "", code: "", price: "" }); // Reset service input fields
+			setNewService({
+				vtype: "",
+				name: "",
+				code: "",
+				price: "",
+				quantity: "",
+			}); // Reset service input fields
 			setIsCustomService(false); // Reset custom service option
 		}
 	};
@@ -82,7 +91,7 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 			// Check if customer exists by name
 			if (!currentCustomerId) {
 				const getCustomerQuery = getCustomerByName({
-					companyName,
+					selectedCompany,
 					customerName,
 				});
 				const querySnapshot = await getDocs(getCustomerQuery);
@@ -97,7 +106,7 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 					const newCustomerRef = doc(
 						collection(
 							db,
-							`${companyName}`,
+							`${selectedCompany}`,
 							"management",
 							"customers"
 						)
@@ -120,7 +129,7 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 			// Retrieve and increment the next invoice ID using a transaction
 			const invoiceCounterRef = doc(
 				db,
-				companyName,
+				selectedCompany,
 				"admin",
 				"invoiceCounters",
 				"nextInvoiceNumber"
@@ -143,13 +152,13 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 
 			// Reference for the global invoices collection
 			const globalInvoiceRef = doc(
-				collection(db, companyName, "management", "invoices")
+				collection(db, selectedCompany, "management", "invoices")
 			);
 			// Reference for the customer's specific invoices subcollection
 			const customerInvoiceRef = doc(
 				collection(
 					db,
-					companyName,
+					selectedCompany,
 					"management",
 					"customers",
 					currentCustomerId,
@@ -159,7 +168,7 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 			);
 
 			const appointmentRef = doc(
-				collection(db, companyName, "management", collectionName)
+				collection(db, selectedCompany, "management", collectionName)
 			);
 
 			// Prepare the invoice data
@@ -316,6 +325,17 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 											setNewService({
 												...newService,
 												code: e.target.value,
+											})
+										}
+									/>
+									<input
+										type="number"
+										placeholder="Quantity"
+										value={newService.quantity}
+										onChange={(e) =>
+											setNewService({
+												...newService,
+												quantity: e.target.value,
 											})
 										}
 									/>

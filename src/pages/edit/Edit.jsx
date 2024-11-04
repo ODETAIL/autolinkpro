@@ -3,12 +3,14 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { useEffect, useState } from "react";
 import { doc, getDoc, serverTimestamp, updateDoc } from "firebase/firestore";
-import { db, companyName } from "../../firebase";
+import { db } from "../../firebase";
 import { useNavigate, useParams } from "react-router-dom";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const Edit = ({ inputs, title, collectionName }) => {
 	const [data, setData] = useState({});
 	const { userId } = useParams();
+	const { selectedCompany } = useCompanyContext();
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -16,7 +18,7 @@ const Edit = ({ inputs, title, collectionName }) => {
 			try {
 				const docRef = doc(
 					db,
-					companyName,
+					selectedCompany,
 					"management",
 					collectionName,
 					userId
@@ -35,7 +37,7 @@ const Edit = ({ inputs, title, collectionName }) => {
 		};
 
 		fetchData();
-	}, [collectionName, userId]);
+	}, [collectionName, userId, selectedCompany]);
 
 	const handleInput = (e) => {
 		const id = e.target.id;
@@ -52,7 +54,7 @@ const Edit = ({ inputs, title, collectionName }) => {
 		try {
 			const docRef = doc(
 				db,
-				companyName,
+				selectedCompany,
 				"management",
 				collectionName,
 				userId

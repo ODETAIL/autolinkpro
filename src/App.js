@@ -32,7 +32,6 @@ import EditAppointment from "./pages/edit/EditAppointment";
 
 function App() {
 	const { darkMode } = useContext(DarkModeContext);
-
 	const { currentUser } = useContext(AuthContext);
 
 	const RequireAuth = ({ children }) => {

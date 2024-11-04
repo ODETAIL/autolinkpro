@@ -6,15 +6,18 @@ import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalance
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import { useEffect, useState } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
-import { companyName, db } from "../../firebase";
+import { db } from "../../firebase";
 import { CreditCardOutlined, SupervisorAccount } from "@mui/icons-material";
 import { Link } from "react-router-dom";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const Widget = ({ type, collectionName }) => {
-	const [amount, setAmount] = useState(null);
-	const [diff, setDiff] = useState(null);
+	const [amount, setAmount] = useState(0);
+	const [diff, setDiff] = useState(0);
+	const { selectedCompany } = useCompanyContext();
 	let data;
 
+	// Define widget data based on the `type` prop
 	switch (type) {
 		case "employee":
 			data = {
@@ -52,7 +55,7 @@ const Widget = ({ type, collectionName }) => {
 						View all customers
 					</Link>
 				),
-				query: "customers",
+				query: `${selectedCompany}/management/customers`,
 				icon: (
 					<PersonOutlinedIcon
 						className="icon"
@@ -76,7 +79,7 @@ const Widget = ({ type, collectionName }) => {
 						View all invoices
 					</Link>
 				),
-				query: "invoices",
+				query: `${selectedCompany}/management/invoices`,
 				icon: (
 					<CreditCardOutlined
 						className="icon"
@@ -102,6 +105,7 @@ const Widget = ({ type, collectionName }) => {
 						}}
 					/>
 				),
+				query: `${selectedCompany}/management/invoices`,
 			};
 			break;
 		case "product":
@@ -134,29 +138,63 @@ const Widget = ({ type, collectionName }) => {
 				new Date().setMonth(today.getMonth() - 2)
 			);
 
-			const lastMonthQuery = query(
-				collection(db, `${companyName}/management/${data.query}`),
-				where("timeStamp", "<=", today),
-				where("timeStamp", ">", lastMonth)
-			);
-			const prevMonthQuery = query(
-				collection(db, `${companyName}/management/${data.query}`),
-				where("timeStamp", "<=", lastMonth),
-				where("timeStamp", ">", prevMonth)
-			);
+			try {
+				if (type === "earning") {
+					// Calculate total earnings
+					const earningsQuery = query(
+						collection(db, data.query),
+						where("timeStamp", "<=", today),
+						where("timeStamp", ">", prevMonth)
+					);
+					const querySnapshot = await getDocs(earningsQuery);
 
-			const lastMonthData = await getDocs(lastMonthQuery);
-			const prevMonthData = await getDocs(prevMonthQuery);
+					let totalEarnings = 0;
+					querySnapshot.forEach((doc) => {
+						const invoice = doc.data();
+						if (Array.isArray(invoice.services)) {
+							invoice.services.forEach((service) => {
+								if (service.price)
+									totalEarnings += parseInt(service.price);
+							});
+						}
+					});
 
-			setAmount(lastMonthData.docs.length);
-			setDiff(
-				((lastMonthData.docs.length - prevMonthData.docs.length) /
-					prevMonthData.docs.length) *
-					100
-			);
+					setAmount(totalEarnings);
+				} else {
+					// Handle other types by counting documents
+					const lastMonthQuery = query(
+						collection(db, data.query),
+						where("timeStamp", "<=", today),
+						where("timeStamp", ">", lastMonth)
+					);
+					const prevMonthQuery = query(
+						collection(db, data.query),
+						where("timeStamp", "<=", lastMonth),
+						where("timeStamp", ">", prevMonth)
+					);
+
+					const [lastMonthData, prevMonthData] = await Promise.all([
+						getDocs(lastMonthQuery),
+						getDocs(prevMonthQuery),
+					]);
+
+					setAmount(lastMonthData.docs.length);
+					setDiff(
+						prevMonthData.docs.length
+							? ((lastMonthData.docs.length -
+									prevMonthData.docs.length) /
+									prevMonthData.docs.length) *
+									100
+							: 0
+					);
+				}
+			} catch (error) {
+				console.error("Error fetching data:", error);
+			}
 		};
+
 		fetchData();
-	}, [data.query]);
+	}, [data.query, selectedCompany, type]);
 
 	return (
 		<div className="widget">
@@ -178,7 +216,7 @@ const Widget = ({ type, collectionName }) => {
 					) : (
 						<KeyboardArrowUpIcon />
 					)}
-					{diff} %
+					{diff}%
 				</div>
 				{data.icon}
 			</div>

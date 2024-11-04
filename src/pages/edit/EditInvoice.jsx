@@ -12,10 +12,11 @@ import {
 	where,
 	writeBatch,
 } from "firebase/firestore";
-import { db, companyName } from "../../firebase";
+import { db } from "../../firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import { Chip, IconButton } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const EditInvoice = ({ inputs, title, collectionName }) => {
 	const [data, setData] = useState({});
@@ -30,6 +31,7 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 	const [isCustomService, setIsCustomService] = useState(false);
 	const { invoiceUid } = useParams();
 	const navigate = useNavigate();
+	const { selectedCompany } = useCompanyContext();
 
 	const vehicleType = ["Suv", "Truck", "Sedan", "Minivan", "Convertible"];
 	const serviceType = [
@@ -49,7 +51,7 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 			try {
 				const docRef = doc(
 					db,
-					companyName,
+					selectedCompany,
 					"management",
 					collectionName,
 					invoiceUid
@@ -62,7 +64,7 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 
 					const appointmentsRef = collection(
 						db,
-						`${companyName}/management/appointments`
+						`${selectedCompany}/management/appointments`
 					);
 					const q = query(
 						appointmentsRef,
@@ -95,7 +97,7 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 		};
 
 		fetchData();
-	}, [collectionName, invoiceUid]);
+	}, [collectionName, invoiceUid, selectedCompany]);
 
 	const handleInput = (e) => {
 		const id = e.target.id;
@@ -112,7 +114,7 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 		try {
 			const docRef = doc(
 				db,
-				companyName,
+				selectedCompany,
 				"management",
 				collectionName,
 				invoiceUid
@@ -138,7 +140,7 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 			// Reference for the global invoices collection document
 			const globalInvoiceRef = doc(
 				db,
-				companyName,
+				selectedCompany,
 				"management",
 				collectionName,
 				invoiceUid
@@ -147,7 +149,7 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 			// Reference for the customer-specific invoices subcollection document
 			const customerInvoiceRef = doc(
 				db,
-				companyName,
+				selectedCompany,
 				"management",
 				"customers",
 				customerId,

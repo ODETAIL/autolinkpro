@@ -23,6 +23,36 @@
 		}
 	}
 
+	.cellWithAccess {
+		width: 60%;
+		margin: 0 auto;
+		padding: 7px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		border-radius: 10px;
+
+		&.admin {
+			color: green;
+			background-color: rgba(0, 128, 0, 0.05);
+		}
+		&.management {
+			background-color: rgba(218, 165, 32, 0.05);
+			color: goldenrod;
+		}
+
+		&.user {
+			background-color: rgba(231, 231, 231, 0.05);
+			color: lightgray;
+		}
+
+		.cellWithAccessTitle {
+			text-transform: capitalize;
+			font-weight: bold;
+			margin-left: 5px;
+		}
+	}
+
 	.cellWithImg {
 		display: flex;
 		align-items: center;

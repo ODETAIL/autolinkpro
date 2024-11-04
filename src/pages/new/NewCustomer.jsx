@@ -3,14 +3,15 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { useState } from "react";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
-import { db, companyName } from "../../firebase";
+import { db } from "../../firebase";
 import { useNavigate } from "react-router-dom";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const NewCustomer = ({ inputs, title, collectionName }) => {
 	const [data, setData] = useState({});
 	const navigate = useNavigate();
 
-	console.log(data);
+	const { selectedCompany } = useCompanyContext();
 
 	const handleInput = (e) => {
 		const id = e.target.id;
@@ -23,7 +24,12 @@ const NewCustomer = ({ inputs, title, collectionName }) => {
 		e.preventDefault();
 		try {
 			await addDoc(
-				collection(db, `${companyName}`, "management", collectionName),
+				collection(
+					db,
+					`${selectedCompany}`,
+					"management",
+					collectionName
+				),
 				{
 					...data,
 					timeStamp: serverTimestamp(),

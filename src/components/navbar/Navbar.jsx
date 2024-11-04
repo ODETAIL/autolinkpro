@@ -7,11 +7,27 @@ import NotificationsNoneOutlinedIcon from "@mui/icons-material/NotificationsNone
 // import ChatBubbleOutlineOutlinedIcon from "@mui/icons-material/ChatBubbleOutlineOutlined";
 // import ListOutlinedIcon from "@mui/icons-material/ListOutlined";
 import { DarkModeContext } from "../../context/darkModeContext";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { DarkMode } from "@mui/icons-material";
+import { AuthContext } from "../../context/AuthContext";
 
 const Navbar = () => {
 	const { dispatch, darkMode } = useContext(DarkModeContext);
+
+	const { currentUser } = useContext(AuthContext);
+
+	const [avatarUrl, setAvatarUrl] = useState(
+		"https://icon-library.com/images/no-image-icon/no-image-icon-0.jpg"
+	);
+
+	useEffect(() => {
+		const fetchAvatar = () => {
+			const photoURL = currentUser?.providerData[0]?.photoURL;
+
+			if (photoURL) setAvatarUrl(photoURL); // Set photoURL directly without URL.createObjectURL
+		};
+		fetchAvatar();
+	}, [currentUser]);
 
 	return (
 		<div className="navbar">
@@ -53,11 +69,7 @@ const Navbar = () => {
 						<ListOutlinedIcon className="icon" />
 					</div> */}
 					<div className="item">
-						<img
-							src="https://images.pexels.com/photos/941693/pexels-photo-941693.jpeg?auto=compress&cs=tinysrgb&dpr=2&w=500"
-							alt=""
-							className="avatar"
-						/>
+						<img src={avatarUrl} alt="" className="avatar" />
 					</div>
 				</div>
 			</div>

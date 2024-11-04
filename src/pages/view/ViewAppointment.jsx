@@ -3,14 +3,16 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
-import { companyName, db } from "../../firebase";
+import { db } from "../../firebase";
 import { Link, useParams } from "react-router-dom";
 import { Divider } from "@mui/material";
 import { calculateGST, calculateSubtotal } from "../../helpers/helpers";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const ViewAppointment = ({ collectionName }) => {
 	const [data, setData] = useState({});
 	const { appointmentId } = useParams();
+	const { selectedCompany } = useCompanyContext();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -18,7 +20,7 @@ const ViewAppointment = ({ collectionName }) => {
 				const docSnap = await getDoc(
 					doc(
 						db,
-						companyName,
+						selectedCompany,
 						"management",
 						collectionName,
 						appointmentId
@@ -36,7 +38,7 @@ const ViewAppointment = ({ collectionName }) => {
 		};
 
 		fetchData();
-	}, [collectionName, appointmentId]);
+	}, [collectionName, appointmentId, selectedCompany]);
 
 	return (
 		<div className="single">

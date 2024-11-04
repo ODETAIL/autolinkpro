@@ -8,11 +8,13 @@ import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
 import { useEffect, useState } from "react";
 import { collection, getDocs, query, where } from "firebase/firestore";
-import { companyName, db } from "../../firebase";
+import { db } from "../../firebase";
 import { calculateSubtotal } from "../../helpers/helpers";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const List = ({ customerId }) => {
 	const [invoices, setInvoices] = useState([]);
+	const { selectedCompany } = useCompanyContext();
 
 	useEffect(() => {
 		// Function to fetch invoices for a specific customer
@@ -21,7 +23,7 @@ const List = ({ customerId }) => {
 				// Reference to the global invoice collection
 				const invoicesRef = collection(
 					db,
-					`${companyName}/management/invoices`
+					`${selectedCompany}/management/invoices`
 				);
 
 				// Query invoices where customerId matches the provided customerId
@@ -49,7 +51,7 @@ const List = ({ customerId }) => {
 		if (customerId) {
 			fetchInvoices();
 		}
-	}, [customerId]);
+	}, [customerId, selectedCompany]);
 	return (
 		<TableContainer component={Paper} className="table">
 			<Table sx={{ minWidth: 650 }} aria-label="simple table">

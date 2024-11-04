@@ -4,14 +4,16 @@ import Navbar from "../../components/navbar/Navbar";
 import Chart from "../../components/chart/Chart";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
-import { companyName, db } from "../../firebase";
+import { db } from "../../firebase";
 import { Link, useParams } from "react-router-dom";
 import List from "../list/List";
 import { invoiceColumns } from "../../datatablesource";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const ViewCustomer = ({ collectionName }) => {
 	const [data, setData] = useState({});
 	const { customerId } = useParams();
+	const { selectedCompany } = useCompanyContext();
 
 	useEffect(() => {
 		const fetchData = async () => {
@@ -19,7 +21,7 @@ const ViewCustomer = ({ collectionName }) => {
 				const docSnap = await getDoc(
 					doc(
 						db,
-						companyName,
+						selectedCompany,
 						"management",
 						collectionName,
 						customerId
@@ -37,7 +39,7 @@ const ViewCustomer = ({ collectionName }) => {
 		};
 
 		fetchData();
-	}, [collectionName, customerId]);
+	}, [collectionName, customerId, selectedCompany]);
 
 	return (
 		<div className="single">

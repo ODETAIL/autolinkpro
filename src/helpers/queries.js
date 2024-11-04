@@ -6,12 +6,12 @@ import {
 	setDoc,
 	where,
 } from "firebase/firestore";
-import { companyName, db } from "../firebase";
+import { db } from "../firebase";
 
-export const initializeInvoiceCounter = async () => {
+export const initializeInvoiceCounter = async ({ selectedCompany }) => {
 	const counterRef = doc(
 		db,
-		companyName,
+		selectedCompany,
 		"admin",
 		"invoiceCounters",
 		"nextInvoiceNumber"
@@ -26,9 +26,9 @@ export const initializeInvoiceCounter = async () => {
 	}
 };
 
-export const getCustomerByName = ({ companyName, customerName }) => {
+export const getCustomerByName = ({ selectedCompany, customerName }) => {
 	return query(
-		collection(db, `${companyName}`, "management", "customers"),
+		collection(db, `${selectedCompany}`, "management", "customers"),
 		where("displayName", "==", customerName)
 	);
 };

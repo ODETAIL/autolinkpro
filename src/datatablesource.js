@@ -1,3 +1,9 @@
+import {
+	AdminPanelSettingsOutlined,
+	LockOpenOutlined,
+	SecurityOutlined,
+} from "@mui/icons-material";
+
 export const employeeColumns = [
 	{
 		field: "displayName",
@@ -33,6 +39,21 @@ export const employeeColumns = [
 			return params.value.replace(
 				/^(\d{3})(\d{3})(\d{4})$/,
 				"($1) $2-$3"
+			);
+		},
+	},
+	{
+		field: "access",
+		headerName: "Access",
+		width: 150,
+		renderCell: ({ row: { access } }) => {
+			return (
+				<div className={`cellWithAccess ${access}`}>
+					{access === "admin" && <AdminPanelSettingsOutlined />}
+					{access === "manager" && <SecurityOutlined />}
+					{access === "user" && <LockOpenOutlined />}
+					<span className="cellWithAccessTitle">{access}</span>
+				</div>
 			);
 		},
 	},

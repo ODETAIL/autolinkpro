@@ -31,6 +31,26 @@
 		border-color: #333;
 
 		.top {
+			.company-dropdown {
+				background: transparent;
+				color: #3f4cffd8;
+				font-size: 20px;
+				font-weight: bold;
+				text-transform: uppercase;
+				border: none;
+				outline: none;
+				padding: 10px;
+				cursor: pointer;
+
+				/* Style individual options to match the dropdown */
+				option {
+					background-color: #333; /* or change to preferred color */
+					font-weight: bold;
+					font-size: 20px;
+					color: #999;
+				}
+			}
+
 			.logo {
 				color: #999;
 			}

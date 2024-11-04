@@ -3,24 +3,28 @@ import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
 import DriveFolderUploadOutlinedIcon from "@mui/icons-material/DriveFolderUploadOutlined";
 import { useEffect, useState } from "react";
-import { doc, getDoc, serverTimestamp, setDoc } from "firebase/firestore";
-import { auth, db, storage, companyName } from "../../firebase";
-import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, serverTimestamp, setDoc } from "firebase/firestore";
+import { auth, db, storage } from "../../firebase";
+import { createUserWithEmailAndPassword, updateProfile } from "firebase/auth";
 import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
 import { useNavigate } from "react-router-dom";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const NewCustomer = ({ inputs, title, collectionName }) => {
 	const [file, setFile] = useState("");
 	const [data, setData] = useState({});
 	const [per, setPerc] = useState(null);
+	const { selectedCompany } = useCompanyContext();
 	const navigate = useNavigate();
 
 	useEffect(() => {
 		const uploadFile = () => {
 			const name = new Date().getTime() + file.name;
 
-			console.log(name);
-			const storageRef = ref(storage, file.name);
+			const storageRef = ref(
+				storage,
+				`${selectedCompany}/avatars/${name}`
+			);
 			const uploadTask = uploadBytesResumable(storageRef, file);
 
 			uploadTask.on(
@@ -54,7 +58,7 @@ const NewCustomer = ({ inputs, title, collectionName }) => {
 			);
 		};
 		file && uploadFile();
-	}, [file]);
+	}, [file, selectedCompany]);
 
 	const handleInput = (e) => {
 		const id = e.target.id;
@@ -66,30 +70,20 @@ const NewCustomer = ({ inputs, title, collectionName }) => {
 	const handleAdd = async (e) => {
 		e.preventDefault();
 		try {
-			const managementDocRef = doc(db, companyName, "management");
-			const docSnap = await getDoc(managementDocRef);
-			if (!docSnap.exists()) {
-				await setDoc(managementDocRef, {});
-			}
-
 			const res = await createUserWithEmailAndPassword(
 				auth,
 				data.email,
 				data.password
 			);
-			await setDoc(
-				doc(
-					db,
-					`${companyName}`,
-					"management",
-					collectionName,
-					res.user.uid
-				),
-				{
-					...data,
-					timeStamp: serverTimestamp(),
-				}
-			);
+
+			if (data.img) {
+				await updateProfile(res.user, { photoURL: data.img });
+			}
+			await setDoc(doc(db, collectionName, res.user.uid), {
+				...data,
+				timeStamp: serverTimestamp(),
+			});
+
 			navigate(-1);
 		} catch (err) {
 			console.log(err);
@@ -133,12 +127,36 @@ const NewCustomer = ({ inputs, title, collectionName }) => {
 							{inputs.map((input) => (
 								<div className="formInput" key={input.id}>
 									<label>{input.label}</label>
-									<input
-										id={input.id}
-										type={input.type}
-										placeholder={input.placeholder}
-										onChange={handleInput}
-									/>
+									{input.type === "select" && (
+										<select
+											id={input.id}
+											onChange={handleInput}
+											value={data[input.id] || ""}
+										>
+											<option value="" disabled>
+												{input.placeholder}
+											</option>
+											{input.options.map(
+												(option, index) => (
+													<option
+														key={index}
+														value={option}
+													>
+														{option}
+													</option>
+												)
+											)}
+										</select>
+									)}
+									{input.type !== "select" && (
+										<input
+											id={input.id}
+											type={input.type}
+											placeholder={input.placeholder}
+											onChange={handleInput}
+											value={data[input.id] || ""}
+										/>
+									)}
 								</div>
 							))}
 							<button

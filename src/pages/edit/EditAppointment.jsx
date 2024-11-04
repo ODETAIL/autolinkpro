@@ -8,19 +8,15 @@ import {
 	getDoc,
 	getDocs,
 	serverTimestamp,
-	setDoc,
 	writeBatch,
 } from "firebase/firestore";
-import { db, companyName } from "../../firebase";
+import { db } from "../../firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import { Chip, IconButton } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import { getCustomerByName } from "../../helpers/queries";
-import {
-	defaultCustomerData,
-	serviceType,
-	vehicleType,
-} from "../../helpers/defaultData";
+import { serviceType, vehicleType } from "../../helpers/defaultData";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const EditAppointment = ({ inputs, title, collectionName }) => {
 	const [data, setData] = useState({});
@@ -36,6 +32,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 	const [services, setServices] = useState([]);
 	const [isCustomService, setIsCustomService] = useState(false);
 	const { appointmentId } = useParams();
+	const { selectedCompany } = useCompanyContext();
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -43,7 +40,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 			try {
 				const docRef = doc(
 					db,
-					companyName,
+					selectedCompany,
 					"management",
 					collectionName,
 					appointmentId
@@ -64,7 +61,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 		};
 
 		fetchData();
-	}, [collectionName, appointmentId]);
+	}, [collectionName, appointmentId, selectedCompany]);
 
 	const handleInput = (e) => {
 		const id = e.target.id;
@@ -108,7 +105,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 			// Check if customer exists by name
 			if (!currentCustomerId) {
 				const getCustomerQuery = getCustomerByName({
-					companyName,
+					selectedCompany,
 					customerName,
 				});
 				const querySnapshot = await getDocs(getCustomerQuery);
@@ -127,13 +124,13 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 
 			// Reference for the global invoices collection
 			const globalInvoiceRef = doc(
-				collection(db, companyName, "management", "invoices")
+				collection(db, selectedCompany, "management", "invoices")
 			);
 			// Reference for the customer's specific invoices subcollection
 			const customerInvoiceRef = doc(
 				collection(
 					db,
-					companyName,
+					selectedCompany,
 					"management",
 					"customers",
 					currentCustomerId,
@@ -144,7 +141,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 
 			const appointmentRef = doc(
 				db,
-				companyName,
+				selectedCompany,
 				"management",
 				collectionName,
 				appointmentId

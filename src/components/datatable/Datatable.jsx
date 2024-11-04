@@ -9,16 +9,22 @@ import {
 	writeBatch,
 	getDoc,
 } from "firebase/firestore";
-import { db, companyName } from "../../firebase";
+import { db } from "../../firebase";
 import { invoiceCustomerViewColumns } from "../../datatablesource";
+import { useCompanyContext } from "../../context/CompanyContext";
 
 const Datatable = ({ collectionName, columns, customerId }) => {
 	const [data, setData] = useState([]);
+	const { selectedCompany } = useCompanyContext();
+
 	useEffect(() => {
 		// LISTEN (REALTIME)
-		const docRef = customerId
-			? `${companyName}/management/${collectionName}/${customerId}/invoices`
-			: `${companyName}/management/${collectionName}`;
+		const isEmployeeCollection = collectionName === "employees"; // Assume "employees" is the global collection name
+		const docRef = isEmployeeCollection
+			? "employees" // Global path for employees
+			: customerId
+			? `${selectedCompany}/management/${collectionName}/${customerId}/invoices` // Company-specific path for customer invoices
+			: `${selectedCompany}/management/${collectionName}`; // Company-specific path for other collections
 		const unsub = onSnapshot(
 			collection(db, docRef),
 			(snapShot) => {
@@ -36,7 +42,7 @@ const Datatable = ({ collectionName, columns, customerId }) => {
 		return () => {
 			unsub();
 		};
-	}, [collectionName, customerId]);
+	}, [collectionName, customerId, selectedCompany]);
 
 	const handleDelete = async (id) => {
 		try {
@@ -45,7 +51,7 @@ const Datatable = ({ collectionName, columns, customerId }) => {
 			// Reference to the document in the global collection
 			const globalDocRef = doc(
 				db,
-				companyName,
+				selectedCompany,
 				"management",
 				collectionName,
 				id
@@ -70,7 +76,7 @@ const Datatable = ({ collectionName, columns, customerId }) => {
 				// Reference to the document in the customer's subcollection
 				const customerDocRef = doc(
 					db,
-					companyName,
+					selectedCompany,
 					"management",
 					"customers",
 					customerId,
@@ -100,28 +106,43 @@ const Datatable = ({ collectionName, columns, customerId }) => {
 			headerName: "Action",
 			width: 200,
 			renderCell: (params) => {
-				return (
-					<div className="cellAction">
-						<Link
-							to={`/${collectionName}/view/${params.row.id}`}
-							style={{ textDecoration: "none" }}
-						>
-							<div className="viewButton">View</div>
-						</Link>
-						<Link
-							to={`/${collectionName}/edit/${params.row.id}`}
-							style={{ textDecoration: "none" }}
-						>
-							<div className="editButton">Edit</div>
-						</Link>
-						<div
-							className="deleteButton"
-							onClick={() => handleDelete(params.row.id)}
-						>
-							Delete
+				const currentUserAccessLevel = params.row.access;
+
+				if (
+					currentUserAccessLevel === "admin" ||
+					currentUserAccessLevel === "manager" ||
+					!currentUserAccessLevel
+				) {
+					return (
+						<div className="cellAction">
+							<Link
+								to={`/${collectionName}/view/${params.row.id}`}
+								style={{ textDecoration: "none" }}
+							>
+								<div className="viewButton">View</div>
+							</Link>
+							<Link
+								to={`/${collectionName}/edit/${params.row.id}`}
+								style={{ textDecoration: "none" }}
+							>
+								<div className="editButton">Edit</div>
+							</Link>
+							<div
+								className="deleteButton"
+								onClick={() => handleDelete(params.row.id)}
+							>
+								Delete
+							</div>
 						</div>
-					</div>
-				);
+					);
+				} else {
+					<Link
+						to={`/${collectionName}/view/${params.row.id}`}
+						style={{ textDecoration: "none" }}
+					>
+						<div className="viewButton">View</div>
+					</Link>;
+				}
 			},
 		},
 	];
