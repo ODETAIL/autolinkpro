@@ -62,7 +62,7 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 	};
 
 	const handleAddService = () => {
-		if (newService.name && newService.code && newService.price) {
+		if (newService.name && newService.price) {
 			setServices([...services, newService]);
 			setNewService({
 				vtype: "",
@@ -317,17 +317,20 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 											}
 										/>
 									)}
-									<input
-										type="text"
-										placeholder="Code"
-										value={newService.code}
-										onChange={(e) =>
-											setNewService({
-												...newService,
-												code: e.target.value,
-											})
-										}
-									/>
+									{selectedCompany !== "odetail" && (
+										<input
+											type="text"
+											placeholder="Code"
+											value={newService.code}
+											onChange={(e) =>
+												setNewService({
+													...newService,
+													code: e.target.value,
+												})
+											}
+										/>
+									)}
+
 									<input
 										type="number"
 										placeholder="Quantity"
