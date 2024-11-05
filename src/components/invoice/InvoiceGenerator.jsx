@@ -1,21 +1,21 @@
 // src/components/InvoiceGenerator.js
-import React, { useState } from "react";
+import React from "react";
 import { PDFViewer } from "@react-pdf/renderer";
 import InvoiceDocument from "./InvoiceDocument";
-import { saveInvoiceToFirebase } from "../../helpers/helpers";
+// import { saveInvoiceToFirebase } from "../../helpers/helpers";
 
 const InvoiceGenerator = ({ invoiceData }) => {
-	const [pdfUrl, setPdfUrl] = useState(null);
+	// const [pdfUrl, setPdfUrl] = useState(null);
 
-	const handleSaveToFirebase = async () => {
-		try {
-			const url = await saveInvoiceToFirebase(invoiceData);
-			setPdfUrl(url);
-			alert("Invoice saved to Firebase!");
-		} catch (error) {
-			console.error("Error saving invoice to Firebase:", error);
-		}
-	};
+	// const handleSaveToFirebase = async () => {
+	// 	try {
+	// 		const url = await saveInvoiceToFirebase(invoiceData);
+	// 		setPdfUrl(url);
+	// 		alert("Invoice saved to Firebase!");
+	// 	} catch (error) {
+	// 		console.error("Error saving invoice to Firebase:", error);
+	// 	}
+	// };
 
 	return (
 		<div>
