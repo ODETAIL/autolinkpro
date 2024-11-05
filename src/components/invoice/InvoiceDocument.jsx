@@ -118,17 +118,6 @@ const InvoiceDocument = ({ invoiceData }) => {
 									>
 										{item.vtype} {item.name}
 									</Text>
-
-									<Text
-										style={{
-											fontStyle: "italic",
-											fontSize: 10,
-											color: "gray",
-										}}
-									>
-										{invoiceData?.year}{" "}
-										{invoiceData?.makemodel}
-									</Text>
 									<Text
 										style={{
 											fontStyle: "italic",
