@@ -127,6 +127,17 @@ export const invoiceColumns = [
 		field: "code",
 		headerName: "Code",
 		width: 100,
+		renderCell: (params) => {
+			return (
+				<select className="cellCodeDropdown">
+					{params.row.services?.map((service, index) => (
+						<option key={index} value={service.code}>
+							{service.code}
+						</option>
+					))}
+				</select>
+			);
+		},
 	},
 	{
 		field: "amount",
