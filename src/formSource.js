@@ -93,16 +93,6 @@ export const customerInputs = [
 
 export const invoiceInputs = [
 	{
-		id: "makemodel",
-		label: "Make/Model",
-		type: "text",
-	},
-	{
-		id: "year",
-		label: "Year",
-		type: "text",
-	},
-	{
 		id: "invoiceType",
 		label: "Invoice Type",
 		type: "select",
