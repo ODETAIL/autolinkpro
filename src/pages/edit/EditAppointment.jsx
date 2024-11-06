@@ -32,7 +32,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 		name: "",
 		code: "",
 		price: "",
-		quantity: "",
+		quantity: 1,
 		itype: "",
 	});
 	const [services, setServices] = useState([]);
@@ -95,7 +95,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 				name: "",
 				code: "",
 				price: "",
-				quantity: "",
+				quantity: 1,
 				itype: "",
 			}); // Reset service input fields
 			setIsCustomService(false); // Reset custom service option

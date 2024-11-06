@@ -163,20 +163,25 @@ const ViewInvoice = ({ collectionName }) => {
 						</div>
 					</div>
 					<div className="right">
-						<PDFDownloadLink
-							document={<InvoiceDocument invoiceData={data} />}
-							fileName={`invoice_${data.invoiceId}.pdf`}
-						>
-							{({ loading }) =>
-								loading ? (
-									"Preparing document..."
-								) : (
-									<div className="downloadButton">
-										Download
-									</div>
-								)
-							}
-						</PDFDownloadLink>
+						<div className="buttonsWrapper">
+							<PDFDownloadLink
+								document={
+									<InvoiceDocument invoiceData={data} />
+								}
+								fileName={`invoice_${data.invoiceId}.pdf`}
+							>
+								{({ loading }) =>
+									loading ? (
+										"Preparing document..."
+									) : (
+										<div className="downloadButton">
+											Download
+										</div>
+									)
+								}
+							</PDFDownloadLink>
+							<div className="sendButton">Send</div>
+						</div>
 
 						<div className="item">
 							<div className="details">

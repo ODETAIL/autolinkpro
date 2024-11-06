@@ -110,16 +110,32 @@
 				padding: 20px;
 				position: relative;
 
-				.downloadButton {
+				.buttonsWrapper {
+					display: flex;
+					flex-direction: row;
 					position: absolute;
+
 					top: 0;
 					right: 0;
-					padding: 5px;
-					font-size: 12px;
-					color: #f85151;
-					background-color: #f8515115;
-					cursor: pointer;
-					border-radius: 0px 0px 0px 5px;
+
+					.downloadButton {
+						padding: 8px;
+						font-size: 12px;
+						color: #f85151;
+						background-color: #f8515115;
+						cursor: pointer;
+						border-radius: 0px 0px 0px 5px;
+						text-decoration: none;
+						display: inline-block;
+					}
+
+					.sendButton {
+						padding: 8px;
+						font-size: 12px;
+						color: #516af8;
+						background-color: #516af817;
+						cursor: pointer;
+					}
 				}
 
 				.item {
