@@ -99,7 +99,7 @@ const ViewInvoice = ({ collectionName }) => {
 												</span>
 												<span className="serviceItemValue">
 													{service.code} (
-													{data?.invoiceType})
+													{service.itype})
 												</span>
 											</div>
 

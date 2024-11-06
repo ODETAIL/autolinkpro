@@ -93,14 +93,6 @@ export const customerInputs = [
 
 export const invoiceInputs = [
 	{
-		id: "invoiceType",
-		label: "Invoice Type",
-		type: "select",
-		placeholder: "Select Invoice Type",
-		options: ["A", "M", "O"],
-	},
-
-	{
 		id: "email",
 		label: "Email",
 		type: "text",

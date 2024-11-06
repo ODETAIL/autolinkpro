@@ -14,17 +14,25 @@ const styles = StyleSheet.create({
 		justifyContent: "space-between",
 		marginBottom: 5,
 	},
+	// Define table styles with equal flex values for each column
 	tableHeader: {
 		fontWeight: "bold",
 		borderBottomWidth: 1,
 		borderBottomColor: "grey",
 		paddingBottom: 5,
+		flexDirection: "row",
 	},
 	tableRow: {
 		flexDirection: "row",
 		justifyContent: "space-between",
+		alignItems: "flex-start",
 		marginBottom: 5,
 	},
+	itemColumn: { flex: 2 },
+	item: { textTransform: "uppercase" },
+	quantityColumn: { flex: 1, textAlign: "center" },
+	priceColumn: { flex: 1, textAlign: "center" },
+	amountColumn: { flex: 1, textAlign: "center" },
 	total: { marginTop: 10, fontSize: 14, fontWeight: "bold" },
 	label: { fontWeight: "bold" },
 	subSection: { fontStyle: "italic", fontSize: 12 },
@@ -42,7 +50,7 @@ const styles = StyleSheet.create({
 	disclaimerText: {
 		fontSize: 10,
 		color: "grey",
-		marginTop: 5, // Adjust for spacing between subtitle and text
+		marginTop: 5,
 	},
 });
 
@@ -100,39 +108,30 @@ const InvoiceDocument = ({ invoiceData }) => {
 				{/* Services Table */}
 				<View style={styles.section}>
 					<View style={[styles.row, styles.tableHeader]}>
-						<Text>Item</Text>
-						<Text>Quantity</Text>
-						<Text>Price</Text>
-						<Text>Amount</Text>
+						<Text style={styles.itemColumn}>Item</Text>
+						<Text style={styles.quantityColumn}>Quantity</Text>
+						<Text style={styles.priceColumn}>Price</Text>
+						<Text style={styles.amountColumn}>Amount</Text>
 					</View>
 					{invoiceData?.services &&
 					invoiceData.services.length > 0 ? (
 						invoiceData.services.map((item, index) => (
 							<View key={index} style={styles.tableRow}>
-								<View>
-									<Text
-										style={{
-											fontWeight: "extrabold",
-											textTransform: "uppercase",
-										}}
-									>
+								<Text style={styles.itemColumn}>
+									<Text style={styles.item}>
 										{item.vtype} {item.name}
 									</Text>
-									<Text
-										style={{
-											fontStyle: "italic",
-											fontSize: 10,
-											color: "gray",
-										}}
-									>
-										{item.code}({invoiceData?.invoiceType})
+									<Text style={styles.subSection}>
+										{item.code} ({item.itype})
 									</Text>
-								</View>
-								<Text>{item.quantity}</Text>
-								<Text>
+								</Text>
+								<Text style={styles.quantityColumn}>
+									{item.quantity}
+								</Text>
+								<Text style={styles.priceColumn}>
 									${parseFloat(item.price).toFixed(2)}
 								</Text>
-								<Text>
+								<Text style={styles.amountColumn}>
 									$
 									{(
 										parseFloat(item.price) * item.quantity

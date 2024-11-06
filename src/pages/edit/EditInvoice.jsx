@@ -17,6 +17,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { Chip, IconButton } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import { useCompanyContext } from "../../context/CompanyContext";
+import { invoiceType } from "../../helpers/defaultData";
 
 const EditInvoice = ({ inputs, title, collectionName }) => {
 	const [data, setData] = useState({});
@@ -26,6 +27,8 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 		name: "",
 		code: "",
 		price: "",
+		quantity: "",
+		itype: "",
 	});
 	const [services, setServices] = useState([]);
 	const [isCustomService, setIsCustomService] = useState(false);
@@ -191,7 +194,14 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 	const handleAddService = () => {
 		if (newService.name && newService.code && newService.price) {
 			setServices([...services, newService]);
-			setNewService({ vtype: "", name: "", code: "", price: "" }); // Reset service input fields
+			setNewService({
+				vtype: "",
+				name: "",
+				code: "",
+				price: "",
+				quantity: "",
+				itype: "",
+			}); // Reset service input fields
 			setIsCustomService(false); // Reset custom service option
 		}
 	};
@@ -320,6 +330,21 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 											}
 										/>
 									)}
+									<select
+										value={newService.itype}
+										onChange={(e) =>
+											handleServiceChange(e, "itype")
+										}
+									>
+										<option value="" disabled>
+											Invoice Type
+										</option>
+										{invoiceType.map((option, index) => (
+											<option key={index} value={option}>
+												{option}
+											</option>
+										))}
+									</select>
 									<input
 										type="text"
 										placeholder="Code"
@@ -328,6 +353,21 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 											setNewService({
 												...newService,
 												code: e.target.value,
+											})
+										}
+									/>
+									<input
+										type="number"
+										placeholder="Quantity"
+										value={
+											newService.quantity
+												? newService.quantity
+												: 1
+										}
+										onChange={(e) =>
+											setNewService({
+												...newService,
+												quantity: e.target.value,
 											})
 										}
 									/>
@@ -355,7 +395,11 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 											className="serviceItem"
 										>
 											<Chip
-												label={`${service.name} - ${service.code} - $${service.price}`}
+												label={
+													selectedCompany === "aztec"
+														? `${service.name} - ${service.code} - $${service.price}`
+														: `${service.name} - $${service.price}`
+												}
 												onDelete={() =>
 													handleDeleteService(index)
 												}

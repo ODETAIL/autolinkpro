@@ -23,6 +23,22 @@
 		}
 	}
 
+	.cellCodeDropdown {
+		background: transparent;
+		color: grey;
+		font-weight: bold;
+		text-transform: uppercase;
+		border: none;
+		outline: none;
+		cursor: pointer;
+
+		option {
+			background-color: #333; /* or change to preferred color */
+			font-weight: bold;
+			color: #999;
+		}
+	}
+
 	.cellWithAccess {
 		width: 60%;
 		margin: 0 auto;

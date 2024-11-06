@@ -1,4 +1,5 @@
 export const vehicleType = ["Suv", "Truck", "Sedan", "Minivan", "Convertible"];
+export const invoiceType = ["A", "M", "O"];
 export const serviceType = [
 	"Windshield",
 	"Door Glass",

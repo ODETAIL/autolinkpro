@@ -1,5 +1,5 @@
 import "./datatable.scss";
-import { DataGrid } from "@mui/x-data-grid";
+import { DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { Link } from "react-router-dom";
 import { useEffect, useState } from "react";
 import {
@@ -170,6 +170,41 @@ const Datatable = ({ collectionName, columns, customerId }) => {
 				pageSize={9}
 				rowsPerPageOptions={[9]}
 				checkboxSelection
+				components={{
+					Toolbar: GridToolbar,
+				}}
+				componentsProps={{
+					toolbar: {
+						sx: {
+							// borderBottom: "1px solid #ddd",
+
+							"& .MuiButtonBase-root": {
+								color: "lightgray",
+								fontWeight: "bold",
+								// padding: "5px 10px",
+								transition: "background-color 0.2s ease",
+								"&:hover": {
+									backgroundColor: "rgba(0, 0, 139, 0.2)",
+								},
+							},
+
+							"& .MuiSvgIcon-root": {
+								color: "lightgray",
+							},
+
+							"& .MuiInputBase-root": {
+								color: "lightgray",
+								padding: "6px",
+								borderRadius: "5px",
+								backgroundColor: "#ffffff",
+								border: "1px solid #ddd",
+								"&:hover": {
+									borderColor: "green",
+								},
+							},
+						},
+					},
+				}}
 			/>
 		</div>
 	);

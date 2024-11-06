@@ -144,7 +144,14 @@ export const invoiceColumns = [
 		headerName: "Amount",
 		width: 100,
 		renderCell: (params) => {
-			return <div className={`cellAmount`}>{params.row.amount}</div>;
+			// Calculate the subtotal of prices in the services array
+			const subtotal =
+				params.row.services?.reduce(
+					(acc, service) => acc + (parseFloat(service.price) || 0),
+					0
+				) || 0;
+
+			return <div className="cellAmount">${subtotal.toFixed(2)}</div>;
 		},
 	},
 ];
