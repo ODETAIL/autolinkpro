@@ -2,13 +2,32 @@
 import React from "react";
 import { Document, Page, Text, View, StyleSheet } from "@react-pdf/renderer";
 import { formatPhoneNumber } from "../../helpers/helpers";
+import { useCompanyContext } from "../../context/CompanyContext";
+// import * as fs from "fs";
+
+// const imagePath = "odetail.jpeg";
 
 // Define styles
 const styles = StyleSheet.create({
 	page: { padding: 30, fontSize: 12 },
 	divider: { height: 1, backgroundColor: "grey", marginVertical: 10 },
+	headerDivider: { height: 3, backgroundColor: "grey", marginVertical: 10 },
 	section: { marginBottom: 10 },
 	title: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
+	header: {
+		flexDirection: "row",
+		justifyContent: "space-between",
+		alignItems: "center",
+		marginBottom: 10,
+	},
+	logo: { width: 30, height: 30 },
+	companyInfo: { marginLeft: 10 },
+	companyName: {
+		fontSize: 16,
+		fontWeight: "bold",
+		textTransform: "capitalize",
+	},
+	contactInfo: { fontSize: 10, color: "grey" },
 	row: {
 		flexDirection: "row",
 		justifyContent: "space-between",
@@ -55,6 +74,8 @@ const styles = StyleSheet.create({
 });
 
 const InvoiceDocument = ({ invoiceData }) => {
+	// const [base64ImageSrc, setBase64ImageSrc] = useState("");
+	const { selectedCompany } = useCompanyContext();
 	// Calculate total amount and GST
 	const totalAmount =
 		invoiceData?.services?.reduce(
@@ -64,9 +85,51 @@ const InvoiceDocument = ({ invoiceData }) => {
 	const gstAmount = totalAmount * 0.05; // assuming a 5% GST
 	const grandTotal = totalAmount + gstAmount;
 
+	// useEffect(() => {
+	// 	fs.readFile(imagePath, (err, data) => {
+	// 		if (err) throw err;
+	// 		const base64Image = `data:image/png;base64,${data.toString(
+	// 			"base64"
+	// 		)}`;
+	// 		setBase64ImageSrc(base64Image);
+	// 	});
+	// }, []);
 	return (
 		<Document>
 			<Page size="A4" style={styles.page}>
+				<View style={styles.header}>
+					<View style={styles.companyInfo}>
+						{/* {selectedCompany === "odetail" ? (
+							<Image src={base64ImageSrc} style={styles.logo} />
+						) : (
+							<Image src={base64ImageSrc} style={styles.logo} />
+						)} */}
+						<Text style={styles.companyName}>
+							{selectedCompany === "odetail"
+								? "O Detail"
+								: "Aztec Auto Glass Ltd"}
+						</Text>
+						<Text style={styles.contactInfo}>
+							{selectedCompany === "odetail"
+								? ""
+								: "aztecautoglassyyc@gmail.com"}
+						</Text>
+						<Text style={styles.contactInfo}>
+							{selectedCompany === "odetail"
+								? formatPhoneNumber("5873662254")
+								: formatPhoneNumber("5879667636")}
+						</Text>
+						<Text style={styles.contactInfo}>
+							GST/HST:{" "}
+							{selectedCompany === "odetail"
+								? "723288155RT0001"
+								: "792765935RT0001"}
+						</Text>
+					</View>
+				</View>
+
+				{/* Divider */}
+				<View style={styles.headerDivider} />
 				{/* Title */}
 				<View style={styles.section}>
 					<Text style={styles.title}>

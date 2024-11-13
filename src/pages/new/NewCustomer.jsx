@@ -61,6 +61,11 @@ const NewCustomer = ({ inputs, title, collectionName }) => {
 											type={input.type}
 											placeholder={input.placeholder}
 											onChange={handleInput}
+											required={
+												input.required
+													? input.required
+													: false
+											}
 										/>
 									</div>
 								))}

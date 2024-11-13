@@ -97,6 +97,11 @@ const EditCustomer = ({ inputs, title, collectionName }) => {
 												type={input.type}
 												value={data[input.id] || ""}
 												placeholder={input.placeholder}
+												required={
+													input.required
+														? input.required
+														: false
+												}
 												onChange={handleInput}
 											/>
 										)}

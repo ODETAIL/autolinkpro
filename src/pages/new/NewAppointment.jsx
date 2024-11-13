@@ -218,7 +218,7 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 										onChange={(e) =>
 											setCustomerName(e.target.value)
 										}
-										required
+										required={true}
 									/>
 								</div>
 

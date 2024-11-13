@@ -47,47 +47,56 @@ export const customerInputs = [
 		id: "displayName",
 		label: "Customer Name",
 		type: "text",
+		required: true,
 	},
 	{
 		id: "email",
 		label: "Email",
 		type: "text",
+		required: true,
 	},
 	{
 		id: "streetAddress1",
 		label: "Street Address 1",
 		type: "text",
+		required: true,
 	},
 	{
 		id: "streetAddress2",
 		label: "Street Address 2",
 		type: "text",
+		required: false,
 	},
 	{
 		id: "city",
 		label: "City",
 		type: "text",
+		required: false,
 	},
 	{
 		id: "postalCode",
 		label: "Postal Code",
 		type: "text",
+		required: false,
 	},
 	{
 		id: "phone",
 		label: "Phone Number",
 		type: "text",
+		required: false,
 	},
 	{
 		id: "companyName",
 		label: "Company Name",
 		type: "text",
+		required: false,
 	},
 	{
 		id: "notes",
 		label: "Notes",
 		type: "text",
 		placeholder: "Customer notes...",
+		required: false,
 	},
 ];
 
@@ -96,6 +105,7 @@ export const invoiceInputs = [
 		id: "email",
 		label: "Email",
 		type: "text",
+		required: true,
 	},
 	{
 		id: "custom",
@@ -151,7 +161,7 @@ export const appointmentInputs = [
 		id: "email",
 		label: "Email",
 		type: "text",
-		required: false,
+		required: true,
 	},
 	{
 		id: "streetAdress1",
@@ -163,7 +173,7 @@ export const appointmentInputs = [
 		id: "phone",
 		label: "Phone",
 		type: "text",
-		required: false,
+		required: true,
 	},
 	{
 		id: "notes",

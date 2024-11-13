@@ -233,7 +233,7 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 											setCustomerName(e.target.value)
 										}
 										placeholder="Customer name"
-										required
+										required={true}
 									/>
 								</div>
 
@@ -273,6 +273,11 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 													}
 													onChange={handleInput}
 													value={data[input.id] || ""}
+													required={
+														input.required
+															? input.required
+															: false
+													}
 												/>
 											)}
 									</div>
