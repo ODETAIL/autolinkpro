@@ -6,11 +6,11 @@ import { styles } from "./InvoiceStyle";
 Font.register({
 	family: "Nunito",
 	fonts: [
-		{ src: "../../fonts/Nunito-Regular.ttf", fontWeight: "normal" },
-		{ src: "../../fonts/Nunito-Italic.ttf", fontStyle: "italic" },
-		{ src: "../../fonts/Nunito-Bold.ttf", fontWeight: "bold" },
+		{ src: "/fonts/Nunito-Regular.ttf", fontWeight: "normal" },
+		{ src: "/fonts/Nunito-Italic.ttf", fontStyle: "italic" },
+		{ src: "/fonts/Nunito-Bold.ttf", fontWeight: "bold" },
 		{
-			src: "../../fonts/Nunito-BoldItalic.ttf",
+			src: "/fonts/Nunito-BoldItalic.ttf",
 			fontStyle: "italic",
 			fontWeight: "bold",
 		},
@@ -31,27 +31,34 @@ const InvoiceDocument = ({ selectedCompany, invoiceData }) => {
 		<Document>
 			<Page size="A4" style={styles.page}>
 				<View style={styles.header}>
+					{/* Logo on the left */}
+					<Image
+						src={
+							selectedCompany === "odetail"
+								? "/images/odetail.jpg"
+								: "/images/aztec.jpg"
+						}
+						style={styles.logo}
+					/>
+
+					{/* Company info on the right */}
 					<View style={styles.companyInfo}>
-						{selectedCompany === "odetail" ? (
-							<Image src="./odetail.jpg" style={styles.logo} />
-						) : (
-							<Image src="./odetail.jpg" style={styles.logo} />
-						)}
 						<Text style={styles.companyName}>
 							{selectedCompany === "odetail"
 								? "O Detail"
 								: "Aztec Auto Glass Ltd"}
 						</Text>
-						<Text style={styles.contactInfo}>
-							{selectedCompany === "odetail"
-								? ""
-								: "aztecautoglassyyc@gmail.com"}
-						</Text>
+
 						<Text style={styles.contactInfo}>
 							{selectedCompany === "odetail"
 								? formatPhoneNumber("5873662254")
-								: formatPhoneNumber("5879667636")}
+								: formatPhoneNumber("5879667636")}{" "}
+							|{" "}
+							{selectedCompany === "odetail"
+								? "invoices@odetail.ca"
+								: "invoices@aztecautoglass.ca"}
 						</Text>
+
 						<Text style={styles.contactInfo}>
 							GST/HST:{" "}
 							{selectedCompany === "odetail"

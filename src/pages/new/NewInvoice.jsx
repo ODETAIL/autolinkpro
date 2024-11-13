@@ -56,7 +56,6 @@ const NewInvoice = ({ inputs, title, collectionName }) => {
 		const selectedValue = e.target.value;
 		if (selectedValue === "Add Custom") {
 			setIsCustomService(true);
-			setNewService({ ...newService, [field]: "" });
 		} else {
 			setIsCustomService(false);
 			setNewService({ ...newService, [field]: selectedValue });

@@ -4,17 +4,17 @@ import { StyleSheet } from "@react-pdf/renderer";
 export const styles = StyleSheet.create({
 	page: { padding: 30, fontSize: 12, fontFamily: "Nunito" },
 	divider: { height: 1, backgroundColor: "grey", marginVertical: 10 },
-	headerDivider: { height: 3, backgroundColor: "grey", marginVertical: 10 },
+	headerDivider: { height: 5, backgroundColor: "grey", marginVertical: 10 },
 	section: { marginBottom: 10 },
 	title: { fontSize: 20, fontWeight: "bold", marginBottom: 10 },
 	header: {
 		flexDirection: "row",
-		justifyContent: "space-between",
+		// justifyContent: "space-between",
 		alignItems: "center",
 		marginBottom: 10,
 	},
-	logo: { width: 30, height: 30 },
-	companyInfo: { marginLeft: 10 },
+	logo: { width: 50, height: 50 },
+	companyInfo: { flex: 1, marginLeft: 10 },
 	companyName: {
 		fontSize: 16,
 		fontWeight: "bold",
