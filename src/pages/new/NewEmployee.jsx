@@ -132,6 +132,11 @@ const NewCustomer = ({ inputs, title, collectionName }) => {
 											id={input.id}
 											onChange={handleInput}
 											value={data[input.id] || ""}
+											required={
+												input.required
+													? input.required
+													: false
+											}
 										>
 											<option value="" disabled>
 												{input.placeholder}
@@ -155,6 +160,11 @@ const NewCustomer = ({ inputs, title, collectionName }) => {
 											placeholder={input.placeholder}
 											onChange={handleInput}
 											value={data[input.id] || ""}
+											required={
+												input.required
+													? input.required
+													: false
+											}
 										/>
 									)}
 								</div>

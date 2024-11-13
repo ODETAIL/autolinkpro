@@ -3,21 +3,25 @@ export const employeeInputs = [
 		id: "displayName",
 		label: "Name",
 		type: "text",
+		required: true,
 	},
 	{
 		id: "email",
 		label: "Email",
 		type: "mail",
+		required: true,
 	},
 	{
 		id: "phone",
 		label: "Phone",
 		type: "text",
+		required: true,
 	},
 	{
 		id: "password",
 		label: "Password",
 		type: "password",
+		required: true,
 	},
 	// {
 	// 	id: "streetAddress",
@@ -28,17 +32,20 @@ export const employeeInputs = [
 		id: "postalCode",
 		label: "Postal Code",
 		type: "text",
+		required: true,
 	},
 	{
 		id: "startDate",
 		label: "Start Date",
 		type: "date",
+		required: false,
 	},
 	{
 		id: "access",
 		label: "Access",
 		options: ["admin", "user", "manager"],
 		type: "select",
+		required: true,
 	},
 ];
 
@@ -154,7 +161,7 @@ export const appointmentInputs = [
 	{
 		id: "end",
 		label: "End Time",
-		required: true,
+		required: false,
 		type: "datetime-local",
 	},
 	{

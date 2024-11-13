@@ -12,9 +12,11 @@ import {
 import { db } from "../../firebase";
 import { invoiceCustomerViewColumns } from "../../datatablesource";
 import { useCompanyContext } from "../../context/CompanyContext";
+import { TextField } from "@mui/material";
 
 const Datatable = ({ collectionName, columns, customerId }) => {
 	const [data, setData] = useState([]);
+	const [searchQuery, setSearchQuery] = useState(""); // State for search input
 	const { selectedCompany } = useCompanyContext();
 
 	useEffect(() => {
@@ -150,6 +152,14 @@ const Datatable = ({ collectionName, columns, customerId }) => {
 	const customerViewColumns = customerId
 		? invoiceCustomerViewColumns.concat(actionColumn)
 		: columns.concat(actionColumn);
+
+	// Filtered data based on search query
+	const filteredData = data.filter((item) =>
+		Object.values(item).some((value) =>
+			String(value).toLowerCase().includes(searchQuery.toLowerCase())
+		)
+	);
+
 	return (
 		<div className="datatable">
 			{!customerId && (
@@ -163,47 +173,26 @@ const Datatable = ({ collectionName, columns, customerId }) => {
 				</div>
 			)}
 
+			{/* Search bar */}
+
+			{/* Search input placed outside DataGrid */}
+			<TextField
+				variant="outlined"
+				size="small"
+				placeholder="Search..."
+				onChange={(e) => setSearchQuery(e.target.value)}
+				style={{ marginBottom: "10px", marginLeft: "auto" }}
+			/>
+
 			<DataGrid
 				className="datagrid"
-				rows={data}
+				rows={filteredData}
 				columns={customerViewColumns}
 				pageSize={9}
 				rowsPerPageOptions={[9]}
 				checkboxSelection
 				components={{
 					Toolbar: GridToolbar,
-				}}
-				componentsProps={{
-					toolbar: {
-						sx: {
-							// borderBottom: "1px solid #ddd",
-
-							"& .MuiButtonBase-root": {
-								color: "lightgray",
-								fontWeight: "bold",
-								// padding: "5px 10px",
-								transition: "background-color 0.2s ease",
-								"&:hover": {
-									backgroundColor: "rgba(0, 0, 139, 0.2)",
-								},
-							},
-
-							"& .MuiSvgIcon-root": {
-								color: "lightgray",
-							},
-
-							"& .MuiInputBase-root": {
-								color: "lightgray",
-								padding: "6px",
-								borderRadius: "5px",
-								backgroundColor: "#ffffff",
-								border: "1px solid #ddd",
-								"&:hover": {
-									borderColor: "green",
-								},
-							},
-						},
-					},
 				}}
 			/>
 		</div>

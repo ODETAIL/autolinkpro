@@ -1,4 +1,11 @@
-export const vehicleType = ["Suv", "Truck", "Sedan", "Minivan", "Convertible"];
+export const vehicleType = [
+	"Suv",
+	"Truck",
+	"Sedan",
+	"Minivan",
+	"Convertible",
+	"Hatchback",
+];
 export const invoiceType = ["A", "M", "O"];
 export const serviceType = [
 	"Windshield",

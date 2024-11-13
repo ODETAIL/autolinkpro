@@ -2,6 +2,11 @@
 	height: 600px;
 	padding: 20px;
 
+	.searchInput {
+		border: 1px solid grey;
+		border-radius: 4px;
+	}
+
 	.datatableTitle {
 		width: 100%;
 		font-size: 24px;

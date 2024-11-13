@@ -93,6 +93,14 @@ export const customerColumns = [
 
 export const invoiceColumns = [
 	{
+		field: "invoiceId",
+		headerName: "Invoice #",
+		width: 85,
+		renderCell: (params) => {
+			return params.row.invoiceId;
+		},
+	},
+	{
 		field: "customer",
 		headerName: "Customer",
 		width: 230,
@@ -159,8 +167,11 @@ export const invoiceColumns = [
 export const invoiceCustomerViewColumns = [
 	{
 		field: "invoiceId",
-		headerName: "ID",
-		width: 50,
+		headerName: "Invoice #",
+		width: 85,
+		renderCell: (params) => {
+			return params.row.invoiceId;
+		},
 	},
 	{
 		field: "timeStamp",

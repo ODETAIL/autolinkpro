@@ -317,19 +317,17 @@ const NewInvoice = ({ inputs, title, collectionName }) => {
 											}
 										/>
 									)}
-									{selectedCompany !== "odetail" && (
-										<input
-											type="text"
-											placeholder="Code"
-											value={newService.code}
-											onChange={(e) =>
-												setNewService({
-													...newService,
-													code: e.target.value,
-												})
-											}
-										/>
-									)}
+									<input
+										type="text"
+										placeholder="Code"
+										value={newService.code}
+										onChange={(e) =>
+											setNewService({
+												...newService,
+												code: e.target.value,
+											})
+										}
+									/>
 									<select
 										value={newService.itype}
 										onChange={(e) =>

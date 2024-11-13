@@ -2,7 +2,7 @@
 import { StyleSheet } from "@react-pdf/renderer";
 
 export const styles = StyleSheet.create({
-	page: { padding: 30, fontSize: 12 },
+	page: { padding: 30, fontSize: 12, fontFamily: "Nunito" },
 	divider: { height: 1, backgroundColor: "grey", marginVertical: 10 },
 	headerDivider: { height: 3, backgroundColor: "grey", marginVertical: 10 },
 	section: { marginBottom: 10 },
@@ -40,14 +40,19 @@ export const styles = StyleSheet.create({
 		alignItems: "flex-start",
 		marginBottom: 5,
 	},
-	itemColumn: { flex: 2 },
+	itemColumn: { flex: 2, flexDirection: "column" },
 	item: { textTransform: "uppercase" },
 	quantityColumn: { flex: 1, textAlign: "center" },
 	priceColumn: { flex: 1, textAlign: "center" },
 	amountColumn: { flex: 1, textAlign: "center" },
 	total: { marginTop: 10, fontSize: 14, fontWeight: "bold" },
 	label: { fontWeight: "bold" },
-	subSection: { fontStyle: "italic", fontSize: 12 },
+	subSection: {
+		color: "grey",
+		fontStyle: "italic",
+		fontSize: 10,
+		marginTop: 2,
+	},
 	disclaimerPage: {
 		padding: 30,
 		fontSize: 12,

@@ -1,12 +1,23 @@
 import React from "react";
-import { Document, Image, Page, Text, View } from "@react-pdf/renderer";
+import { Document, Image, Page, Text, View, Font } from "@react-pdf/renderer";
 import { formatPhoneNumber } from "../../helpers/helpers";
-import { useCompanyContext } from "../../context/CompanyContext";
 import { styles } from "./InvoiceStyle";
 
-const InvoiceDocument = ({ invoiceData }) => {
-	const { selectedCompany } = useCompanyContext();
+Font.register({
+	family: "Nunito",
+	fonts: [
+		{ src: "../../fonts/Nunito-Regular.ttf", fontWeight: "normal" },
+		{ src: "../../fonts/Nunito-Italic.ttf", fontStyle: "italic" },
+		{ src: "../../fonts/Nunito-Bold.ttf", fontWeight: "bold" },
+		{
+			src: "../../fonts/Nunito-BoldItalic.ttf",
+			fontStyle: "italic",
+			fontWeight: "bold",
+		},
+	],
+});
 
+const InvoiceDocument = ({ selectedCompany, invoiceData }) => {
 	// Calculate total amount and GST
 	const totalAmount =
 		invoiceData?.services?.reduce(
@@ -102,14 +113,14 @@ const InvoiceDocument = ({ invoiceData }) => {
 					invoiceData.services.length > 0 ? (
 						invoiceData.services.map((item, index) => (
 							<View key={index} style={styles.tableRow}>
-								<Text style={styles.itemColumn}>
+								<View style={styles.itemColumn}>
 									<Text style={styles.item}>
 										{item.vtype} {item.name}
 									</Text>
 									<Text style={styles.subSection}>
 										{item.code} ({item.itype})
 									</Text>
-								</Text>
+								</View>
 								<Text style={styles.quantityColumn}>
 									{item.quantity}
 								</Text>

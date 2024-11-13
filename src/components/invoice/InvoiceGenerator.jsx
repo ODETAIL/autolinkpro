@@ -2,10 +2,12 @@
 import React from "react";
 import { PDFViewer } from "@react-pdf/renderer";
 import InvoiceDocument from "./InvoiceDocument";
+import { useCompanyContext } from "../../context/CompanyContext";
 // import { saveInvoiceToFirebase } from "../../helpers/helpers";
 
 const InvoiceGenerator = ({ invoiceData }) => {
 	// const [pdfUrl, setPdfUrl] = useState(null);
+	const { selectedCompany } = useCompanyContext();
 
 	// const handleSaveToFirebase = async () => {
 	// 	try {
@@ -21,7 +23,10 @@ const InvoiceGenerator = ({ invoiceData }) => {
 		<div>
 			{invoiceData && (
 				<PDFViewer style={{ width: "100%", height: "500px" }}>
-					<InvoiceDocument invoiceData={invoiceData} />
+					<InvoiceDocument
+						invoiceData={invoiceData}
+						selectedCompany={selectedCompany}
+					/>
 				</PDFViewer>
 			)}
 
