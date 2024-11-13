@@ -2,6 +2,7 @@ import React from "react";
 import { Document, Image, Page, Text, View, Font } from "@react-pdf/renderer";
 import { formatPhoneNumber } from "../../helpers/helpers";
 import { styles } from "./InvoiceStyle";
+import { excludedServiceNames } from "../../helpers/defaultData";
 
 Font.register({
 	family: "Nunito",
@@ -122,7 +123,12 @@ const InvoiceDocument = ({ selectedCompany, invoiceData }) => {
 							<View key={index} style={styles.tableRow}>
 								<View style={styles.itemColumn}>
 									<Text style={styles.item}>
-										{item.vtype} {item.name}
+										{item.vtype} {item.name}{" "}
+										{excludedServiceNames.includes(
+											item.name
+										)
+											? ""
+											: "replacement"}
 									</Text>
 									<Text style={styles.subSection}>
 										{item.code} ({item.itype})

@@ -18,6 +18,11 @@ export const serviceType = [
 	"Warranty",
 	"Add Custom",
 ];
+export const excludedServiceNames = [
+	"Chip Subscription",
+	"Warranty",
+	"Add Custom",
+];
 export const colors = [
 	"#413c4d",
 	"#212d40",

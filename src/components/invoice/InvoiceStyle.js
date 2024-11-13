@@ -50,6 +50,7 @@ export const styles = StyleSheet.create({
 	subSection: {
 		color: "grey",
 		fontStyle: "italic",
+		textTransform: "uppercase",
 		fontSize: 10,
 		marginTop: 2,
 	},
