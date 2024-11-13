@@ -83,7 +83,7 @@ export const customerInputs = [
 		id: "phone",
 		label: "Phone Number",
 		type: "text",
-		required: false,
+		required: true,
 	},
 	{
 		id: "companyName",
