@@ -57,6 +57,7 @@ const ViewInvoice = ({ collectionName }) => {
 		}
 	};
 
+	console.log(pdfUrl);
 	return (
 		<div className="single">
 			<Sidebar />
