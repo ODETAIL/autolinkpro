@@ -183,9 +183,10 @@ const InvoiceDocument = ({ selectedCompany, invoiceData }) => {
 						cannot guarantee that the chip or crack will disappear
 						completely. Some chips may still be visible after
 						repair, and there is a small chance the windshield may
-						crack during or after the process. O Detail is not
-						responsible for additional damage resulting from the
-						repair.
+						crack during or after the process.{" "}
+						{selectedCompany === "odetail" ? "O Detail" : "Aztec"}{" "}
+						is not responsible for additional damage resulting from
+						the repair.
 					</Text>
 
 					{/* Warranty Section */}
