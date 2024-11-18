@@ -6,15 +6,19 @@ import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
 import { Link, useParams } from "react-router-dom";
 import { Divider } from "@mui/material";
-import { calculateGST, calculateSubtotal } from "../../helpers/helpers";
+import {
+	calculateGST,
+	calculateSubtotal,
+	saveInvoiceToFirebase,
+} from "../../helpers/helpers";
 import { useCompanyContext } from "../../context/CompanyContext";
-import InvoiceGenerator from "../../components/invoice/InvoiceGenerator";
-import { PDFDownloadLink } from "@react-pdf/renderer";
+import { PDFDownloadLink, PDFViewer } from "@react-pdf/renderer";
 import InvoiceDocument from "../../components/invoice/InvoiceDocument";
 
 const ViewInvoice = ({ collectionName }) => {
 	const [data, setData] = useState({});
 	const { invoiceUid } = useParams();
+	const [pdfUrl, setPdfUrl] = useState("");
 	const { selectedCompany } = useCompanyContext();
 
 	useEffect(() => {
@@ -42,6 +46,16 @@ const ViewInvoice = ({ collectionName }) => {
 
 		fetchData();
 	}, [collectionName, invoiceUid, selectedCompany]);
+
+	const handleSaveToFirebase = async () => {
+		try {
+			const url = await saveInvoiceToFirebase(data, selectedCompany);
+			setPdfUrl(url);
+			alert("Invoice Successfully Saved!");
+		} catch (error) {
+			console.error("Error saving invoice to Firebase:", error);
+		}
+	};
 
 	return (
 		<div className="single">
@@ -180,6 +194,12 @@ const ViewInvoice = ({ collectionName }) => {
 									)
 								}
 							</PDFDownloadLink>
+							<div
+								className="saveButton"
+								onClick={handleSaveToFirebase}
+							>
+								Save
+							</div>
 							<div className="sendButton">Send</div>
 						</div>
 
@@ -188,7 +208,19 @@ const ViewInvoice = ({ collectionName }) => {
 								<h1 className="itemTitle">Invoice Preview</h1>
 								<div className="preview">
 									{data ? (
-										<InvoiceGenerator invoiceData={data} />
+										<PDFViewer
+											style={{
+												width: "100%",
+												height: "500px",
+											}}
+										>
+											<InvoiceDocument
+												invoiceData={data}
+												selectedCompany={
+													selectedCompany
+												}
+											/>
+										</PDFViewer>
 									) : null}
 								</div>
 							</div>

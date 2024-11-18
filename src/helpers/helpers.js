@@ -29,19 +29,31 @@ export const getAvatar = async (file, folder = "odetail/avatars") => {
 };
 
 export const saveInvoiceToFirebase = async (invoiceData, selectedCompany) => {
-	const storageRef = ref(
-		storage,
-		`${selectedCompany}/invoices/${invoiceData.invoiceId}.pdf`
-	);
+	try {
+		const storageRef = ref(
+			storage,
+			`${selectedCompany}/invoices/${invoiceData.customerId}/${invoiceData.displayName}_invoice_${invoiceData.invoiceId}.pdf`
+		);
 
-	// Generate PDF Blob using @react-pdf/renderer
-	const doc = <InvoiceDocument invoiceData={invoiceData} />;
-	const pdfBlob = await pdf(doc).toBlob();
+		// Generate PDF Blob using @react-pdf/renderer
+		const doc = (
+			<InvoiceDocument
+				invoiceData={invoiceData}
+				selectedCompany={selectedCompany}
+			/>
+		);
+		const pdfBlob = await pdf(doc).toBlob();
 
-	// Upload the PDF blob to Firebase Storage
-	await uploadBytes(storageRef, pdfBlob);
-	const pdfURL = await getDownloadURL(storageRef);
-	return pdfURL;
+		// Upload the PDF blob to Firebase Storage
+		await uploadBytes(storageRef, pdfBlob);
+
+		// Get the download URL
+		const pdfURL = await getDownloadURL(storageRef);
+		return pdfURL; // Should return the URL if successful
+	} catch (error) {
+		console.error("Error fetching download URL:", error);
+		return null;
+	}
 };
 
 export const formatPhoneNumber = (phone) => {
