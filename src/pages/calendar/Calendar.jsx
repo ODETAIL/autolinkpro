@@ -35,20 +35,21 @@ const Calendar = ({ collectionName, columns }) => {
 		const unsub = onSnapshot(
 			collection(db, `${selectedCompany}/management/${collectionName}`),
 			(snapShot) => {
-				let events = [];
-				snapShot.docs.forEach((doc) => {
-					// Convert Firestore timestamps to JavaScript Dates
-					const eventData = doc.data();
-					events.push({
-						...eventData,
-						id: doc.id,
-						title: eventData.title,
-						start: eventData.start,
-						end: eventData.end,
-					});
-				});
-				setData(events); // Update state with events from Firestore
-				addEventsToCalendar(events); // Add events to the calendar
+				const events = snapShot.docs.map((doc) => ({
+					id: doc.id,
+					title: doc.data().title,
+					start: doc.data().start,
+					end: doc.data().end,
+					...doc.data(),
+				}));
+
+				const uniqueEvents = [
+					...new Map(
+						events.map((event) => [event.id, event])
+					).values(),
+				];
+
+				setData(uniqueEvents); // Update state with unique events
 			},
 			(error) => {
 				console.log("Error fetching events:", error);
@@ -56,14 +57,6 @@ const Calendar = ({ collectionName, columns }) => {
 		);
 		return () => unsub();
 	}, [collectionName, selectedCompany]);
-
-	const addEventsToCalendar = (events) => {
-		const calendarApi = calendarRef.current.getApi();
-		calendarApi.removeAllEvents(); // Clear existing events
-		events.forEach((event) => {
-			calendarApi.addEvent(event); // Add each event from Firestore
-		});
-	};
 
 	const setAppointments = (events) => {
 		const serializableEvents = events.map((event, index) => ({

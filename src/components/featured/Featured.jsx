@@ -19,13 +19,18 @@ const Featured = () => {
 	useEffect(() => {
 		const fetchData = async () => {
 			const today = new Date();
-			const startOfToday = new Date(today.setHours(0, 0, 0, 0));
-			const startOfLastWeek = new Date(
-				today.setDate(today.getDate() - 7)
-			);
-			const startOfLastMonth = new Date(
-				today.setMonth(today.getMonth() - 1)
-			);
+
+			// Start of today
+			const startOfToday = new Date(today);
+			startOfToday.setHours(0, 0, 0, 0);
+
+			// Start of last week
+			const startOfLastWeek = new Date(today);
+			startOfLastWeek.setDate(today.getDate() - 7);
+
+			// Start of last month
+			const startOfLastMonth = new Date(today);
+			startOfLastMonth.setMonth(today.getMonth() - 1);
 
 			// Query for all invoices in the selected company's management invoices collection
 			const invoicesRef = collection(
@@ -63,7 +68,9 @@ const Featured = () => {
 					const invoice = doc.data();
 					if (Array.isArray(invoice.services)) {
 						invoice.services.forEach((service) => {
-							if (service.price) total += parseInt(service.price);
+							if (service.price && !isNaN(service.price)) {
+								total += parseFloat(service.price);
+							}
 						});
 					}
 				});
@@ -124,8 +131,19 @@ const Featured = () => {
 			<div className="bottom">
 				<div className="featuredChart">
 					<CircularProgressbar
-						value={(todaySales / totalRevenue) * 100}
-						text={`${(todaySales / totalRevenue) * 100}%`}
+						value={
+							totalRevenue > 0
+								? (todaySales / totalRevenue) * 100
+								: 0
+						}
+						text={
+							totalRevenue > 0
+								? `${(
+										(todaySales / totalRevenue) *
+										100
+								  ).toFixed(2)}%`
+								: "0%"
+						}
 						strokeWidth={5}
 					/>
 				</div>

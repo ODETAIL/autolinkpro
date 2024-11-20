@@ -180,11 +180,13 @@ const Widget = ({ type, collectionName }) => {
 
 					setAmount(lastMonthData.docs.length);
 					setDiff(
-						prevMonthData.docs.length
+						prevMonthData.docs.length > 0
 							? ((lastMonthData.docs.length -
 									prevMonthData.docs.length) /
 									prevMonthData.docs.length) *
 									100
+							: lastMonthData.docs.length > 0
+							? 100
 							: 0
 					);
 				}
