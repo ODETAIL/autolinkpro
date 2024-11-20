@@ -161,7 +161,7 @@ export const appointmentInputs = [
 	{
 		id: "end",
 		label: "End Time",
-		required: false,
+		required: true,
 		type: "datetime-local",
 	},
 	{
