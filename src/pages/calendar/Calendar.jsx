@@ -63,8 +63,8 @@ const Calendar = ({ collectionName, columns }) => {
 			...event,
 			id: index,
 			title: event.title,
-			start: event.start.toISOString(),
-			end: event.end.toISOString(),
+			start: event.start ? new Date(event.start).toISOString() : null, // Validate `start`
+			end: event.end ? new Date(event.end).toISOString() : null, // Validate `end`
 			extendedProps: event.extendedProps,
 		}));
 
