@@ -32,3 +32,10 @@ export const getCustomerByName = ({ selectedCompany, customerName }) => {
 		where("displayName", "==", customerName)
 	);
 };
+
+export const getGlobalInvoiceDocument = ({ selectedCompany, customerName }) => {
+	return query(
+		collection(db, `${selectedCompany}`, "management", "invoices"),
+		where("displayName", "==", customerName)
+	);
+};

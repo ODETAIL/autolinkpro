@@ -14,7 +14,10 @@ import { db } from "../../firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import { Chip, IconButton } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
-import { getCustomerByName } from "../../helpers/queries";
+import {
+	getCustomerByName,
+	getGlobalInvoiceDocument,
+} from "../../helpers/queries";
 import {
 	invoiceType,
 	serviceType,
@@ -26,6 +29,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 	const [data, setData] = useState({});
 	const [customerName, setCustomerName] = useState(""); // Store customer name
 	const [customerId, setCustomerId] = useState(""); // Store customer ID after creation or fetch
+	const [globalInvoiceId, setGlobalInvoiceId] = useState("");
 	const [customerData, setCustomerData] = useState({});
 	const [newService, setNewService] = useState({
 		vtype: "",
@@ -114,6 +118,8 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 		try {
 			let currentCustomerId = customerId;
 			let currentCustomerData = customerData;
+			let currentGlobalInvoiceId = globalInvoiceId;
+			const batch = writeBatch(db);
 
 			// Check if customer exists by name
 			if (!currentCustomerId) {
@@ -124,22 +130,58 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 				const querySnapshot = await getDocs(getCustomerQuery);
 
 				if (!querySnapshot.empty) {
-					// Customer exists, retrieve ID and details
 					const customerDoc = querySnapshot.docs[0];
 					currentCustomerId = customerDoc.id;
 					currentCustomerData = customerDoc.data();
+				} else {
+					const newCustomerRef = doc(
+						collection(
+							db,
+							selectedCompany,
+							"management",
+							"customers"
+						)
+					);
+					currentCustomerId = newCustomerRef.id;
+					currentCustomerData = { name: customerName }; // Add default data here
+					batch.set(newCustomerRef, currentCustomerData);
 				}
 
-				// Set state with fetched or created customer data
 				setCustomerId(currentCustomerId);
 				setCustomerData(currentCustomerData);
 			}
 
-			// Reference for the global invoices collection
-			const globalInvoiceRef = doc(
-				collection(db, selectedCompany, "management", "invoices")
+			const getGlobalInvoiceDocQuery = getGlobalInvoiceDocument({
+				selectedCompany,
+				customerName,
+			});
+			const globalInvoiceDocQuerySnapshot = await getDocs(
+				getGlobalInvoiceDocQuery
 			);
-			// Reference for the customer's specific invoices subcollection
+
+			if (!globalInvoiceDocQuerySnapshot.empty) {
+				const globalInvoiceDoc = globalInvoiceDocQuerySnapshot.docs[0];
+				currentGlobalInvoiceId = globalInvoiceDoc.id;
+				setGlobalInvoiceId(currentGlobalInvoiceId);
+			} else {
+				const newGlobalInvoiceRef = doc(
+					collection(db, selectedCompany, "management", "invoices")
+				);
+				currentGlobalInvoiceId = newGlobalInvoiceRef.id;
+				batch.set(newGlobalInvoiceRef, {
+					...data,
+					services,
+					timeStamp: serverTimestamp(),
+				});
+			}
+
+			const globalInvoiceRef = doc(
+				db,
+				selectedCompany,
+				"management",
+				"invoices",
+				currentGlobalInvoiceId
+			);
 			const customerInvoiceRef = doc(
 				collection(
 					db,
@@ -149,9 +191,8 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 					currentCustomerId,
 					"invoices"
 				),
-				globalInvoiceRef.id // Use the same ID for both documents
+				currentGlobalInvoiceId
 			);
-
 			const appointmentRef = doc(
 				db,
 				selectedCompany,
@@ -160,22 +201,38 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 				appointmentId
 			);
 
-			// Prepare the invoice data
 			const invoiceData = {
 				...data,
-				...currentCustomerData,
 				services,
-				customerId: currentCustomerId, // For easier reference in global invoices
+				customerId: currentCustomerId,
 				timeStamp: serverTimestamp(),
 			};
 
-			const batch = writeBatch(db);
-			batch.update(globalInvoiceRef, invoiceData); // Add to global invoices collection
-			batch.update(customerInvoiceRef, invoiceData); // Add to customer-specific invoices subcollection
-			batch.update(appointmentRef, invoiceData);
-			// Commit the batch write
-			await batch.commit();
+			// Ensure documents exist or set them if not
+			const globalInvoiceSnap = await getDoc(globalInvoiceRef);
+			if (globalInvoiceSnap.exists()) {
+				batch.update(globalInvoiceRef, invoiceData);
+			} else {
+				batch.set(globalInvoiceRef, invoiceData, { merge: true });
+			}
 
+			const customerInvoiceSnap = await getDoc(customerInvoiceRef);
+			if (customerInvoiceSnap.exists()) {
+				batch.update(customerInvoiceRef, invoiceData);
+			} else {
+				batch.set(customerInvoiceRef, invoiceData, { merge: true });
+			}
+
+			const appointmentSnap = await getDoc(appointmentRef);
+			if (appointmentSnap.exists()) {
+				batch.update(appointmentRef, invoiceData);
+			} else {
+				batch.set(appointmentRef, invoiceData, { merge: true });
+			}
+
+			// Commit the batch
+			await batch.commit();
+			console.log("Batch commit successful.");
 			navigate(-1);
 		} catch (err) {
 			console.error("Error updating invoice:", err);
