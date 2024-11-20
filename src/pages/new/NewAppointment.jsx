@@ -116,6 +116,9 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 					);
 					const newCustomerData = {
 						...defaultCustomerData(customerName),
+						email: data.email,
+						phone: data.phone,
+						streetAddress1: data.streetAddress1,
 						displayName: customerName,
 					};
 					await setDoc(newCustomerRef, newCustomerData);

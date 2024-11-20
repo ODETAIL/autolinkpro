@@ -121,6 +121,12 @@ export const invoiceInputs = [
 		placeholder: "Custom costs",
 	},
 	{
+		id: "phone",
+		label: "Phone",
+		type: "text",
+		required: true,
+	},
+	{
 		id: "status",
 		label: "Status",
 		type: "select",
@@ -171,7 +177,7 @@ export const appointmentInputs = [
 		required: true,
 	},
 	{
-		id: "streetAdress1",
+		id: "streetAddress1",
 		label: "Address",
 		type: "text",
 		required: false,
