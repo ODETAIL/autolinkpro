@@ -18,10 +18,13 @@ export const serviceType = [
 	"Warranty",
 	"Add Custom",
 ];
-export const excludedServiceNames = [
-	"Chip Subscription",
-	"Warranty",
-	"Add Custom",
+export const replacementEligibleServices = [
+	"Windshield",
+	"Door Glass",
+	"Back Glass",
+	"Sunroof",
+	"Mirror",
+	"Quarter Glass",
 ];
 export const colors = [
 	"#413c4d",

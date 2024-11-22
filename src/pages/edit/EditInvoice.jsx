@@ -184,7 +184,6 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 		const selectedValue = e.target.value;
 		if (selectedValue === "Add Custom") {
 			setIsCustomService(true);
-			setNewService({ ...newService, [field]: "" });
 		} else {
 			setIsCustomService(false);
 			setNewService({ ...newService, [field]: selectedValue });
@@ -192,7 +191,7 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 	};
 
 	const handleAddService = () => {
-		if (newService.name && newService.code && newService.price) {
+		if (newService.name && newService.price) {
 			setServices([...services, newService]);
 			setNewService({
 				vtype: "",

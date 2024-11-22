@@ -49,7 +49,10 @@ const NewInvoice = ({ inputs, title, collectionName }) => {
 		const id = e.target.id;
 		const value = e.target.value;
 
-		setData({ ...data, [id]: value });
+		setData((prevData) => ({
+			...prevData,
+			[id]: value,
+		}));
 	};
 
 	const handleServiceChange = (e, field) => {
