@@ -2,18 +2,36 @@ import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { storage } from "../firebase";
 import InvoiceDocument from "../components/invoice/InvoiceDocument";
 import { pdf } from "@react-pdf/renderer";
+import { replacementEligibleServices } from "./defaultData";
 
 export const calculateSubtotal = (services) => {
-	return services?.reduce(
-		(acc, service) => acc + (parseInt(service.price) || 0),
-		0
+	return (
+		services?.reduce(
+			(acc, service) => acc + (parseInt(service.price) || 0),
+			0
+		) || 0
 	);
 };
 
 export const calculateGST = (price) => {
-	const gstRate = 0.05; // GST rate in Alberta is 5%
-	const total = parseInt(price) * gstRate;
-	return total.toFixed(2);
+	const gstRate = 0.05;
+	const parsedPrice = parseFloat(price);
+
+	if (isNaN(parsedPrice)) {
+		return 0; // Return default value
+	}
+
+	return parsedPrice * gstRate;
+};
+
+export const calculateTotalPrice = (services) => {
+	if (!services || services.length === 0) {
+		return 0; // Ensure it returns 0 if there are no services
+	}
+	const subtotal = parseFloat(calculateSubtotal(services)) || 0;
+	const gst = parseFloat(calculateGST(subtotal)) || 0;
+
+	return subtotal + gst; // Always return a numeric value
 };
 
 export const getAvatar = async (file, folder = "odetail/avatars") => {
@@ -70,4 +88,35 @@ export const formatPhoneNumber = (phone) => {
 
 	// Return the original phone if it's not 10 digits
 	return phone;
+};
+
+export const generateServicesTable = (services) => {
+	return services
+		.map(
+			(service) => `
+      <tr>
+        <td style="padding: 5px 0; border-bottom: 1px solid #e0e0e0;">${service.vtype.toUpperCase()} ${service.name.toUpperCase()} ${
+				replacementEligibleServices.includes(service.name)
+					? "REPLACEMENT"
+					: ""
+			}</td>
+        <td style="text-align: right; border-bottom: 1px solid #e0e0e0;">$${
+			service.price
+		}</td>
+      </tr>
+    `
+		)
+		.join("");
+};
+
+export const formatDate = (date) => {
+	const validDate = new Date(date); // Convert to Date object
+	if (isNaN(validDate)) {
+		throw new TypeError(
+			"Invalid Date object or string passed to formatDate"
+		);
+	}
+
+	const options = { year: "numeric", month: "long", day: "numeric" };
+	return validDate.toLocaleDateString("en-US", options);
 };
