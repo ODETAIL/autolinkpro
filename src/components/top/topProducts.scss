@@ -1,0 +1,68 @@
+.top-products {
+	flex: 1;
+	padding: 10px;
+	border-radius: 10px;
+	color: gray;
+	-webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+	box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+
+	.title {
+		font-size: 18px;
+		color: rgb(160, 160, 160);
+		font-weight: bold;
+	}
+
+	.products-table {
+		width: 100%;
+		border-collapse: collapse;
+		color: rgb(160, 160, 160);
+		font-weight: bold;
+
+		th {
+			text-align: left;
+			padding: 10px;
+			font-size: 14px;
+			color: gray;
+		}
+
+		td {
+			padding: 10px;
+			font-size: 14px;
+
+			&:first-child {
+				font-weight: bold;
+				color: rgb(160, 160, 160);
+			}
+		}
+
+		tr {
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+			&:last-child {
+				border-bottom: none;
+			}
+		}
+
+		.popularity-bar {
+			height: 6px;
+			width: 100%;
+			background-color: rgba(255, 255, 255, 0.1);
+			border-radius: 5px;
+			overflow: hidden;
+
+			.bar-fill {
+				height: 100%;
+				border-radius: 5px;
+			}
+		}
+		.sales-percentage {
+			display: inline-block;
+			padding: 4px 8px;
+			font-size: 12px;
+			font-weight: bold;
+			border: 1px solid; /* Border color dynamically set */
+			border-radius: 5px;
+			text-align: center;
+		}
+	}
+}

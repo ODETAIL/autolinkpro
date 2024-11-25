@@ -2,7 +2,6 @@ import "./widget.scss";
 import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
-import AccountBalanceWalletOutlinedIcon from "@mui/icons-material/AccountBalanceWalletOutlined";
 import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
 import { useEffect, useState } from "react";
 import { collection, query, where, getDocs } from "firebase/firestore";
@@ -17,7 +16,6 @@ const Widget = ({ type, collectionName }) => {
 	const { selectedCompany } = useCompanyContext();
 	let data;
 
-	// Define widget data based on the `type` prop
 	switch (type) {
 		case "employee":
 			data = {
@@ -106,22 +104,6 @@ const Widget = ({ type, collectionName }) => {
 					/>
 				),
 				query: `${selectedCompany}/management/invoices`,
-			};
-			break;
-		case "product":
-			data = {
-				title: "PRODUCTS",
-				query: "products",
-				link: "See details",
-				icon: (
-					<AccountBalanceWalletOutlinedIcon
-						className="icon"
-						style={{
-							backgroundColor: "rgba(128, 0, 128, 0.2)",
-							color: "purple",
-						}}
-					/>
-				),
 			};
 			break;
 		default:

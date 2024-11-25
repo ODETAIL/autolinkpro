@@ -29,6 +29,7 @@ import NewAppointment from "./pages/new/NewAppointment";
 import ViewCustomer from "./pages/view/ViewCustomer";
 import EditCustomer from "./pages/edit/EditCustomer";
 import EditAppointment from "./pages/edit/EditAppointment";
+import Stats from "./pages/stats/Stats";
 
 function App() {
 	const { darkMode } = useContext(DarkModeContext);
@@ -52,6 +53,17 @@ function App() {
 								</RequireAuth>
 							}
 						/>
+						<Route path="stats">
+							<Route
+								index
+								element={
+									<RequireAuth>
+										<Stats />
+									</RequireAuth>
+								}
+							/>
+						</Route>
+
 						<Route path="employees">
 							<Route
 								index
