@@ -108,6 +108,23 @@ const VehicleWidget = ({ type }) => {
 					<DirectionsCarFilledOutlined
 						className="icon"
 						style={{
+							backgroundColor: "rgba(255, 0, 128, 0.2)",
+							color: "gray",
+						}}
+					/>
+				),
+			};
+			break;
+
+		case "Coupe":
+			data = {
+				title: "# OF COUPES",
+				isMoney: false,
+				query: `${selectedCompany}/management/invoices`,
+				icon: (
+					<DirectionsCarFilledOutlined
+						className="icon"
+						style={{
 							backgroundColor: "rgba(128, 128, 128, 0.2)",
 							color: "gray",
 						}}

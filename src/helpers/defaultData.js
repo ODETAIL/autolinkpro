@@ -5,6 +5,7 @@ export const vehicleType = [
 	"Minivan",
 	"Convertible",
 	"Hatchback",
+	"Coupe",
 ];
 export const invoiceType = ["A", "M", "O"];
 export const serviceType = [
