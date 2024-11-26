@@ -4,12 +4,7 @@ import "./stats.scss";
 
 import TopProducts from "../../components/top/TopProducts";
 import ChartStats from "../../components/stat-charts/ChartStats";
-import JobWidget from "../../components/widget/JobWidget";
-import {
-	replacementEligibleServices,
-	vehicleType,
-} from "../../helpers/defaultData";
-import VehicleWidget from "../../components/widget/VehicleWidget";
+import List from "../../components/table/Table";
 
 const Stats = () => {
 	return (
@@ -17,19 +12,17 @@ const Stats = () => {
 			<Sidebar />
 			<div className="statsContainer">
 				<Navbar />
-				<div className="widgets">
-					{replacementEligibleServices.map((jobType) => (
-						<JobWidget key={jobType} type={jobType} />
-					))}
-				</div>
 				<div className="charts">
 					<TopProducts collectionName="employees" />
 					<ChartStats aspect={2 / 1} />
 				</div>
-				<div className="widgets">
-					{vehicleType.map((vType) => (
-						<VehicleWidget key={vType} type={vType} />
-					))}
+				<div className="listContainerWrapper">
+					<div className="listContainer">
+						<List listType="vehicles" />
+					</div>
+					<div className="listContainer">
+						<List listType="job" />
+					</div>
 				</div>
 			</div>
 		</div>

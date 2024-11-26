@@ -5,13 +5,14 @@ import Chart from "../../components/chart/Chart";
 import { useEffect, useState } from "react";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../firebase";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import List from "../list/List";
 import { invoiceColumns } from "../../datatablesource";
 import { useCompanyContext } from "../../context/CompanyContext";
 
 const ViewCustomer = ({ collectionName }) => {
 	const [data, setData] = useState({});
+	const navigate = useNavigate();
 	const { customerId } = useParams();
 	const { selectedCompany } = useCompanyContext();
 
@@ -40,6 +41,17 @@ const ViewCustomer = ({ collectionName }) => {
 
 		fetchData();
 	}, [collectionName, customerId, selectedCompany]);
+
+	// Handler for adding a new appointment
+	const handleAddAppointment = () => {
+		if (customerId) {
+			navigate(`/appointments/new?customerId=${customerId}`); // Pass customerId as a query parameter
+		} else {
+			console.error(
+				"Customer ID is required to create a new appointment."
+			);
+		}
+	};
 
 	return (
 		<div className="single">
@@ -125,8 +137,16 @@ const ViewCustomer = ({ collectionName }) => {
 					</div>
 				</div>
 				<div className="bottom">
-					<h1 className="title">Last Transactions</h1>
-					{/* <List customerId={customerId} /> */}
+					<div className="header">
+						<h1 className="title">Last Transactions</h1>
+						<button
+							className="addAppointmentButton"
+							onClick={handleAddAppointment}
+						>
+							New Appointment
+						</button>
+					</div>
+
 					<List
 						collectionName={collectionName}
 						columns={invoiceColumns}

@@ -1,10 +1,11 @@
 import "./new.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
 	collection,
 	doc,
+	getDoc,
 	getDocs,
 	runTransaction,
 	serverTimestamp,
@@ -12,7 +13,7 @@ import {
 	writeBatch,
 } from "firebase/firestore";
 import { db } from "../../firebase";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { Chip, IconButton } from "@mui/material";
 import { AddCircleOutline } from "@mui/icons-material";
 import {
@@ -44,6 +45,37 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 	const [isCustomService, setIsCustomService] = useState(false);
 	const navigate = useNavigate();
 	const { selectedCompany } = useCompanyContext();
+	const { search } = useLocation();
+	const query = new URLSearchParams(search);
+	const optionalCustomerId = query.get("customerId");
+
+	useEffect(() => {
+		if (optionalCustomerId) {
+			const fetchData = async () => {
+				try {
+					const docSnap = await getDoc(
+						doc(
+							db,
+							selectedCompany,
+							"management",
+							"customers",
+							optionalCustomerId
+						)
+					);
+					if (docSnap.exists()) {
+						setCustomerData(docSnap.data());
+					} else {
+						console.log("No such document!");
+						setCustomerData({ error: "Document not found" });
+					}
+				} catch (error) {
+					console.error("Error fetching document: ", error);
+				}
+			};
+
+			fetchData();
+		}
+	}, [optionalCustomerId, selectedCompany]);
 
 	const handleInput = (e) => {
 		const id = e.target.id;
@@ -104,6 +136,25 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 					const customerDoc = querySnapshot.docs[0];
 					currentCustomerId = customerDoc.id;
 					currentCustomerData = customerDoc.data();
+
+					// Increment visit count for returning customer
+					const customerRef = doc(
+						db,
+						`${selectedCompany}/management/customers`,
+						currentCustomerId
+					);
+					await runTransaction(db, async (transaction) => {
+						const customerSnapshot = await transaction.get(
+							customerRef
+						);
+						if (customerSnapshot.exists()) {
+							const currentVisitCount =
+								customerSnapshot.data().visitCount || 0;
+							transaction.update(customerRef, {
+								visitCount: currentVisitCount + 1,
+							});
+						}
+					});
 				} else {
 					// Customer doesn't exist, create a new document with full details
 					const newCustomerRef = doc(
@@ -120,6 +171,7 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 						phone: data.phone,
 						streetAddress1: data.streetAddress1,
 						displayName: customerName,
+						visitCount: 1,
 						timeStamp: serverTimestamp(),
 					};
 					await setDoc(newCustomerRef, newCustomerData);
@@ -185,6 +237,7 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 				services,
 				customerId: currentCustomerId, // For easier reference in global invoices
 				invoiceId: newInvoiceId,
+				status: "draft",
 				timeStamp: serverTimestamp(),
 			};
 
@@ -218,7 +271,10 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 									<label>Customer</label>
 									<input
 										type="text"
-										value={customerName}
+										value={
+											customerName ||
+											customerData["displayName"]
+										}
 										onChange={(e) =>
 											setCustomerName(e.target.value)
 										}
@@ -235,7 +291,13 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 												<select
 													id={input.id}
 													onChange={handleInput}
-													value={data[input.id] || ""}
+													value={
+														data[input.id] ||
+														customerData[
+															input.id
+														] ||
+														""
+													}
 												>
 													<option value="" disabled>
 														{input.placeholder}
@@ -261,7 +323,13 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 														input.placeholder
 													}
 													onChange={handleInput}
-													value={data[input.id] || ""}
+													value={
+														data[input.id] ||
+														customerData[
+															input.id
+														] ||
+														""
+													}
 													required={
 														input.required
 															? input.required

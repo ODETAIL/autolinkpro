@@ -130,7 +130,9 @@ const ViewInvoice = ({ collectionName }) => {
 	const handleSendInvoiceEmail = async () => {
 		try {
 			const pdfUrl = await handleSaveToFirebase();
-			await sendInvoiceEmail(pdfUrl);
+			if (data?.status !== "draft") {
+				await sendInvoiceEmail(pdfUrl);
+			}
 		} catch (error) {
 			console.error("Error fetching invoice data:", error);
 		}

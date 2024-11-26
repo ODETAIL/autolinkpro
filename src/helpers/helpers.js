@@ -120,3 +120,12 @@ export const formatDate = (date) => {
 	const options = { year: "numeric", month: "long", day: "numeric" };
 	return validDate.toLocaleDateString("en-US", options);
 };
+
+export const toCamelCase = (str) => {
+	return str
+		.toLowerCase()
+		.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, (match, index) =>
+			index === 0 ? match.toLowerCase() : match.toUpperCase()
+		)
+		.replace(/\s+/g, "");
+};
