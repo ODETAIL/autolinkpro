@@ -120,6 +120,7 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 						phone: data.phone,
 						streetAddress1: data.streetAddress1,
 						displayName: customerName,
+						timeStamp: serverTimestamp(),
 					};
 					await setDoc(newCustomerRef, newCustomerData);
 
