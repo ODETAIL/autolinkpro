@@ -196,6 +196,9 @@ const ViewInvoice = ({ collectionName }) => {
 													{service.code} (
 													{service.itype})
 												</span>
+												<span className="serviceItemValue">
+													{service.notes}
+												</span>
 											</div>
 
 											<span className="itemKey">

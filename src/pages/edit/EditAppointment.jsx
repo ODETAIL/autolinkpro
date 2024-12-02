@@ -38,6 +38,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 		price: "",
 		quantity: 1,
 		itype: "",
+		notes: "",
 	});
 	const [services, setServices] = useState([]);
 	const [isCustomService, setIsCustomService] = useState(false);
@@ -101,6 +102,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 				price: "",
 				quantity: 1,
 				itype: "",
+				notes: "",
 			}); // Reset service input fields
 			setIsCustomService(false); // Reset custom service option
 		}
@@ -411,6 +413,17 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 											setNewService({
 												...newService,
 												price: e.target.value,
+											})
+										}
+									/>
+									<input
+										type="text"
+										placeholder="Notes"
+										value={newService.notes}
+										onChange={(e) =>
+											setNewService({
+												...newService,
+												notes: e.target.value,
 											})
 										}
 									/>

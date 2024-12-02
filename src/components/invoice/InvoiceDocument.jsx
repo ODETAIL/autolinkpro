@@ -133,6 +133,9 @@ const InvoiceDocument = ({ selectedCompany, invoiceData }) => {
 									<Text style={styles.subSection}>
 										{item.code} ({item.itype})
 									</Text>
+									<Text style={styles.subSection}>
+										{item.notes}
+									</Text>
 								</View>
 								<Text style={styles.quantityColumn}>
 									{item.quantity}
