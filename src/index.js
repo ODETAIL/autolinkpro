@@ -4,6 +4,7 @@ import App from "./App";
 import { AuthContextProvider } from "./context/AuthContext";
 import { DarkModeContextProvider } from "./context/darkModeContext";
 import { CompanyContextProvider } from "./context/CompanyContext";
+import { CustomerContextProvider } from "./context/CustomerContext";
 
 const container = document.getElementById("root");
 const root = ReactDOM.createRoot(container);
@@ -13,7 +14,9 @@ root.render(
 		<DarkModeContextProvider>
 			<AuthContextProvider>
 				<CompanyContextProvider>
-					<App />
+					<CustomerContextProvider>
+						<App />
+					</CustomerContextProvider>
 				</CompanyContextProvider>
 			</AuthContextProvider>
 		</DarkModeContextProvider>
