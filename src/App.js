@@ -5,6 +5,7 @@ import {
 	employeeColumns,
 	customerColumns,
 	invoiceColumns,
+	billingColumns,
 } from "./datatablesource";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import {
@@ -63,7 +64,7 @@ function App() {
 								}
 							/>
 						</Route>
-
+						{/* EMPLOYEES */}
 						<Route path="employees">
 							<Route
 								index
@@ -109,6 +110,7 @@ function App() {
 								}
 							/>
 						</Route>
+						{/* APPOINTMENTS */}
 						<Route path="appointments">
 							<Route
 								index
@@ -146,6 +148,7 @@ function App() {
 								}
 							/>
 						</Route>
+						{/* CUSTOMER */}
 						<Route path="customers">
 							<Route
 								index
@@ -191,6 +194,7 @@ function App() {
 								}
 							/>
 						</Route>
+						{/* INVOICES */}
 						<Route path="invoices">
 							<Route
 								index
@@ -230,6 +234,40 @@ function App() {
 										<NewInvoice
 											inputs={invoiceInputs}
 											title="Add New Invoice"
+											collectionName="invoices"
+										/>
+									</RequireAuth>
+								}
+							/>
+						</Route>
+						{/* BILLING */}
+						<Route path="billing">
+							<Route
+								index
+								element={
+									<RequireAuth>
+										<List
+											collectionName="invoices"
+											columns={billingColumns}
+										/>
+									</RequireAuth>
+								}
+							/>
+							<Route
+								path="billing/:billingId"
+								element={
+									<RequireAuth>
+										<ViewInvoice collectionName="invoices" />
+									</RequireAuth>
+								}
+							/>
+							<Route
+								path="edit/:billingId"
+								element={
+									<RequireAuth>
+										<EditInvoice
+											inputs={invoiceInputs}
+											title="Edit Billing"
 											collectionName="invoices"
 										/>
 									</RequireAuth>

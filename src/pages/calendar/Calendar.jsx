@@ -43,13 +43,7 @@ const Calendar = ({ collectionName, columns }) => {
 					...doc.data(),
 				}));
 
-				const uniqueEvents = [
-					...new Map(
-						events.map((event) => [event.id, event])
-					).values(),
-				];
-
-				setData(uniqueEvents); // Update state with unique events
+				setData(events);
 			},
 			(error) => {
 				console.log("Error fetching events:", error);

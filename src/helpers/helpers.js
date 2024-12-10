@@ -1,8 +1,9 @@
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import { storage } from "../firebase";
+import { db, storage } from "../firebase";
 import InvoiceDocument from "../components/invoice/InvoiceDocument";
 import { pdf } from "@react-pdf/renderer";
 import { replacementEligibleServices } from "./defaultData";
+import { doc, runTransaction } from "firebase/firestore";
 
 export const calculateSubtotal = (services) => {
 	return (
@@ -128,4 +129,38 @@ export const toCamelCase = (str) => {
 			index === 0 ? match.toLowerCase() : match.toUpperCase()
 		)
 		.replace(/\s+/g, "");
+};
+
+export const getNextInvoiceId = async (selectedCompany) => {
+	const invoiceCounterRef = doc(
+		db,
+		selectedCompany,
+		"admin",
+		"invoiceCounters",
+		"nextInvoiceNumber"
+	);
+
+	try {
+		const newInvoiceId = await runTransaction(db, async (transaction) => {
+			const counterDoc = await transaction.get(invoiceCounterRef);
+
+			if (!counterDoc.exists()) {
+				throw new Error("Counter document does not exist.");
+			}
+
+			const currentInvoiceNumber = counterDoc.data().nextInvoiceNumber;
+
+			// Increment and update the counter
+			transaction.update(invoiceCounterRef, {
+				nextInvoiceNumber: currentInvoiceNumber + 1,
+			});
+
+			return currentInvoiceNumber;
+		});
+
+		return newInvoiceId; // Return the incremented invoice number
+	} catch (error) {
+		console.error("Failed to retrieve next invoice number:", error);
+		throw error; // Rethrow the error for handling upstream
+	}
 };

@@ -229,3 +229,61 @@ export const invoiceCustomerViewColumns = [
 		},
 	},
 ];
+
+export const billingColumns = [
+	{
+		field: "invoiceId",
+		headerName: "Invoice #",
+		width: 85,
+		renderCell: (params) => {
+			return params.row.invoiceId;
+		},
+	},
+	{
+		field: "code",
+		headerName: "Code",
+		width: 100,
+		renderCell: (params) => {
+			return (
+				<select className="cellCodeDropdown">
+					{params.row.services?.map((service, index) => (
+						<option key={index} value={service.code}>
+							{service.code}
+						</option>
+					))}
+				</select>
+			);
+		},
+	},
+	{
+		field: "itype",
+		headerName: "Supplier",
+		width: 100,
+		renderCell: (params) => {
+			return (
+				<select className="cellCodeDropdown">
+					{params.row.services?.map((service, index) => (
+						<option key={index} value={service.itype}>
+							{service.itype}
+						</option>
+					))}
+				</select>
+			);
+		},
+	},
+	{
+		field: "amount",
+		headerName: "Material Cost",
+		width: 150,
+		renderCell: (params) => {
+			// Calculate the subtotal of prices in the services array
+			const subtotal =
+				params.row.services?.reduce(
+					(acc, service) => acc + (parseFloat(service.price) || 0),
+					0
+				) || 0;
+
+			return <div className="cellAmount">${subtotal.toFixed(2)}</div>;
+		},
+	},
+];

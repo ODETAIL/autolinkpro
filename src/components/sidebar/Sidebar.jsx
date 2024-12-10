@@ -13,6 +13,7 @@ import { DarkModeContext } from "../../context/darkModeContext";
 import { useContext } from "react";
 import {
 	CalendarMonthOutlined,
+	MonetizationOnOutlined,
 	SupervisorAccountOutlined,
 } from "@mui/icons-material";
 import { useCompanyContext } from "../../context/CompanyContext";
@@ -85,7 +86,12 @@ const Sidebar = () => {
 							<span>Invoices</span>
 						</li>
 					</Link>
-
+					<Link to="/billing" style={{ textDecoration: "none" }}>
+						<li>
+							<MonetizationOnOutlined className="icon" />
+							<span>Billing</span>
+						</li>
+					</Link>
 					<p className="title">USEFUL</p>
 					<Link to="/stats" style={{ textDecoration: "none" }}>
 						<li>
