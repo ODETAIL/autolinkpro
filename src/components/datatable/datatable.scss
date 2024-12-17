@@ -1,146 +1,164 @@
 .datatable {
-	height: 600px;
-	padding: 20px;
+  height: 600px;
+  padding: 20px;
 
-	.searchInput {
-		border: 1px solid grey;
-		border-radius: 4px;
-	}
+  .titleWithSearch {
+    display: flex;
+    justify-content: flex-end; // Align search bar to the right
+    // margin-bottom: 10px;
 
-	.datatableTitle {
-		width: 100%;
-		font-size: 24px;
-		color: gray;
-		margin-bottom: 10px;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
+    .searchInput {
+      border-radius: 4px;
+      background-color: #222; // Match dark theme
+      color: white;
+      width: 250px;
 
-		.link {
-			text-decoration: none;
-			color: green;
-			font-size: 16px;
-			font-weight: 400;
-			border: 1px solid green;
-			padding: 5px;
-			border-radius: 5px;
-			cursor: pointer;
-		}
-	}
+      &::placeholder {
+        color: lightgray;
+        font-size: 14px;
+      }
 
-	.cellCodeDropdown {
-		background: transparent;
-		color: grey;
-		font-weight: bold;
-		text-transform: uppercase;
-		border: none;
-		outline: none;
-		cursor: pointer;
+      &:focus {
+        border-color: green;
+        box-shadow: 0 0 5px rgba(0, 128, 0, 0.5);
+      }
+    }
+  }
 
-		option {
-			background-color: #333; /* or change to preferred color */
-			font-weight: bold;
-			color: #999;
-		}
-	}
+  .datatableTitle {
+    width: 100%;
+    font-size: 24px;
+    color: gray;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
 
-	.cellWithAccess {
-		width: 60%;
-		margin: 0 auto;
-		padding: 7px;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		border-radius: 10px;
+    .link {
+      text-decoration: none;
+      color: green;
+      font-size: 16px;
+      font-weight: 400;
+      border: 1px solid green;
+      padding: 5px;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  }
 
-		&.admin {
-			color: green;
-			background-color: rgba(0, 128, 0, 0.05);
-		}
-		&.management {
-			background-color: rgba(218, 165, 32, 0.05);
-			color: goldenrod;
-		}
+  .cellCodeDropdown {
+    background: transparent;
+    color: grey;
+    font-weight: bold;
+    text-transform: uppercase;
+    border: none;
+    outline: none;
+    cursor: pointer;
 
-		&.user {
-			background-color: rgba(231, 231, 231, 0.05);
-			color: lightgray;
-		}
+    option {
+      background-color: #333; /* or change to preferred color */
+      font-weight: bold;
+      color: #999;
+    }
+  }
 
-		.cellWithAccessTitle {
-			text-transform: capitalize;
-			font-weight: bold;
-			margin-left: 5px;
-		}
-	}
+  .cellWithAccess {
+    width: 60%;
+    margin: 0 auto;
+    padding: 7px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border-radius: 10px;
 
-	.cellWithImg {
-		display: flex;
-		align-items: center;
+    &.admin {
+      color: green;
+      background-color: rgba(0, 128, 0, 0.05);
+    }
+    &.management {
+      background-color: rgba(218, 165, 32, 0.05);
+      color: goldenrod;
+    }
 
-		.cellImg {
-			width: 32px;
-			height: 32px;
-			border-radius: 50%;
-			object-fit: cover;
-			margin-right: 20px;
-		}
-	}
+    &.user {
+      background-color: rgba(231, 231, 231, 0.05);
+      color: lightgray;
+    }
 
-	.cellWithStatus {
-		padding: 7px;
-		border-radius: 10px;
-		text-transform: uppercase;
-		margin: 0 auto;
+    .cellWithAccessTitle {
+      text-transform: capitalize;
+      font-weight: bold;
+      margin-left: 5px;
+    }
+  }
 
-		&.paid {
-			background-color: rgba(0, 128, 0, 0.05);
-			color: green;
-		}
-		&.draft {
-			background-color: rgba(231, 231, 231, 0.05);
-			color: lightgray;
-		}
-		&.pending {
-			background-color: rgba(218, 165, 32, 0.05);
-			color: goldenrod;
-		}
-		&.overdue {
-			background-color: rgba(255, 0, 0, 0.05);
-			color: crimson;
-		}
-	}
+  .cellWithImg {
+    display: flex;
+    align-items: center;
 
-	.cellAmount {
-		color: green;
-	}
+    .cellImg {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-right: 20px;
+    }
+  }
 
-	.cellAction {
-		display: flex;
-		align-items: center;
-		gap: 15px;
+  .cellWithStatus {
+    padding: 7px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    margin: 0 auto;
 
-		.viewButton {
-			padding: 2px 5px;
-			border-radius: 5px;
-			color: blue;
-			border: 1px dotted rgba(0, 0, 139, 0.596);
-			cursor: pointer;
-		}
-		.editButton {
-			padding: 2px 5px;
-			border-radius: 5px;
-			color: orange;
-			border: 1px dotted rgba(247, 182, 5, 0.596);
-			cursor: pointer;
-		}
+    &.paid {
+      background-color: rgba(0, 128, 0, 0.05);
+      color: green;
+    }
+    &.draft {
+      background-color: rgba(231, 231, 231, 0.05);
+      color: lightgray;
+    }
+    &.pending {
+      background-color: rgba(218, 165, 32, 0.05);
+      color: goldenrod;
+    }
+    &.overdue {
+      background-color: rgba(255, 0, 0, 0.05);
+      color: crimson;
+    }
+  }
 
-		.deleteButton {
-			padding: 2px 5px;
-			border-radius: 5px;
-			color: crimson;
-			border: 1px dotted rgba(220, 20, 60, 0.6);
-			cursor: pointer;
-		}
-	}
+  .cellAmount {
+    color: green;
+  }
+
+  .cellAction {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+
+    .viewButton {
+      padding: 2px 5px;
+      border-radius: 5px;
+      color: blue;
+      border: 1px dotted rgba(0, 0, 139, 0.596);
+      cursor: pointer;
+    }
+    .editButton {
+      padding: 2px 5px;
+      border-radius: 5px;
+      color: orange;
+      border: 1px dotted rgba(247, 182, 5, 0.596);
+      cursor: pointer;
+    }
+
+    .deleteButton {
+      padding: 2px 5px;
+      border-radius: 5px;
+      color: crimson;
+      border: 1px dotted rgba(220, 20, 60, 0.6);
+      cursor: pointer;
+    }
+  }
 }
