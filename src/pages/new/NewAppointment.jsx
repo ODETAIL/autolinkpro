@@ -272,6 +272,9 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
                           placeholder={input.placeholder}
                           onChange={handleInput}
                           value={data[input.id] || ""}
+                          step={
+                            input.type === "datetime-local" ? 1800 : undefined
+                          }
                           required={input.required ? input.required : false}
                         />
                       )}
