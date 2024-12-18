@@ -34,7 +34,14 @@ const Datatable = ({ collectionName, columns, customerId }) => {
         snapShot.docs.forEach((doc) => {
           list.push({ id: doc.id, ...doc.data() });
         });
-        setData(list);
+        setData((prevData) => {
+          // Merge new data with existing, avoiding duplicates
+          const updatedData = [...prevData, ...list];
+          return updatedData.filter(
+            (item, index, self) =>
+              index === self.findIndex((t) => t.id === item.id)
+          );
+        });
       },
       (error) => {
         console.log(error);
@@ -166,7 +173,7 @@ const Datatable = ({ collectionName, columns, customerId }) => {
           String(service.code).toLowerCase().includes(searchQuery.toLowerCase())
         ))
   );
-  console.log(data);
+
   return (
     <div className="datatable">
       {!customerId && (

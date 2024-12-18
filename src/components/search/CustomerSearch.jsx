@@ -3,68 +3,76 @@ import { useCustomerContext } from "../../context/CustomerContext";
 import "./customer-search.scss";
 
 const CustomerSearch = ({ onCustomerSelect }) => {
-	const { matchingCustomers, searchCustomers } = useCustomerContext();
-	const [searchTerm, setSearchTerm] = useState("");
-	const [showDropdown, setShowDropdown] = useState(false);
-	const dropdownRef = useRef(null);
+  const { matchingCustomers, searchCustomers } = useCustomerContext();
+  const [searchTerm, setSearchTerm] = useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const dropdownRef = useRef(null);
 
-	const handleSearch = (e) => {
-		const value = e.target.value;
-		setSearchTerm(value);
-		searchCustomers(value); // Trigger the search functionality
-		setShowDropdown(true); // Show the dropdown while searching
-	};
+  let handleBlurTimeout;
 
-	const handleSelect = (customer) => {
-		onCustomerSelect(customer); // Pass the selected customer to the parent
-		setSearchTerm(customer.displayName); // Set the selected customer name
-		setShowDropdown(false); // Hide the dropdown
-	};
+  const handleSearch = (e) => {
+    const value = e.target.value;
+    setSearchTerm(value);
+    searchCustomers(value); // Trigger the search functionality
+    setShowDropdown(true); // Show the dropdown while searching
+  };
 
-	const handleClickOutside = (e) => {
-		if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
-			setShowDropdown(false); // Hide dropdown if clicked outside
-		}
-	};
+  const handleSelect = (customer) => {
+    clearTimeout(handleBlurTimeout); // Prevent handleBlur from running
+    onCustomerSelect(customer); // Pass the selected customer to the parent
+    setSearchTerm(customer.displayName); // Set the selected customer name
+    setShowDropdown(false); // Hide the dropdown
+  };
 
-	const handleBlur = () => {
-		// Hide the dropdown when the input loses focus after a small delay
-		setTimeout(() => setShowDropdown(false), 200);
-	};
+  const handleClickOutside = (e) => {
+    if (dropdownRef.current && !dropdownRef.current.contains(e.target)) {
+      setShowDropdown(false); // Hide dropdown if clicked outside
+    }
+  };
 
-	useEffect(() => {
-		document.addEventListener("mousedown", handleClickOutside);
+  const handleBlur = () => {
+    handleBlurTimeout = setTimeout(() => {
+      if (
+        !matchingCustomers.some(
+          (customer) => customer.displayName === searchTerm
+        )
+      ) {
+        onCustomerSelect({ displayName: searchTerm });
+      }
+      setShowDropdown(false);
+    }, 200);
+  };
 
-		return () => {
-			document.removeEventListener("mousedown", handleClickOutside);
-		};
-	}, []);
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
 
-	return (
-		<div className="customerSearch" ref={dropdownRef}>
-			<label>Customer</label>
-			<input
-				type="text"
-				value={searchTerm}
-				onChange={handleSearch}
-				onFocus={() => setShowDropdown(true)} // Show dropdown on focus
-				onBlur={handleBlur}
-				className="customerSearchInput"
-			/>
-			{showDropdown && matchingCustomers.length > 0 && (
-				<ul className="dropdown">
-					{matchingCustomers.map((customer) => (
-						<li
-							key={customer.customerId}
-							onClick={() => handleSelect(customer)}
-						>
-							{customer.displayName}
-						</li>
-					))}
-				</ul>
-			)}
-		</div>
-	);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
+  return (
+    <div className="customerSearch" ref={dropdownRef}>
+      <label>Customer</label>
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={handleSearch}
+        onFocus={() => setShowDropdown(true)} // Show dropdown on focus
+        onBlur={handleBlur}
+        className="customerSearchInput"
+      />
+      {showDropdown && matchingCustomers.length > 0 && (
+        <ul className="dropdown">
+          {matchingCustomers.map((customer, index) => (
+            <li key={index} onClick={() => handleSelect(customer)}>
+              {customer.displayName}
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
 };
 
 export default CustomerSearch;
