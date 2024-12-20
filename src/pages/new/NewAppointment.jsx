@@ -31,9 +31,11 @@ import {
   incrementVisitCount,
 } from "../../helpers/firebase-helper";
 import { serviceInputs } from "../../formSource";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const NewAppointment = ({ inputs, title, collectionName }) => {
-  const [data, setData] = useState({});
+  const [data, setData] = useState({ start: null, end: null });
   const [customerName, setCustomerName] = useState(""); // Store customer name
   const [customerId, setCustomerId] = useState(""); // Store customer ID after creation or fetch
   const [customerData, setCustomerData] = useState({});
@@ -140,6 +142,13 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
   // Fetch or create customer, then add invoice
   const handleAdd = async (e) => {
     e.preventDefault();
+
+    const formattedData = {
+      ...data,
+      start: data.start ? data.start.toISOString() : null,
+      end: data.end ? data.end.toISOString() : null,
+    };
+
     await initializeInvoiceCounter({ selectedCompany });
     try {
       let currentCustomerId = customerId;
@@ -167,7 +176,7 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
             collection(db, `${selectedCompany}`, "management", "customers")
           );
           const newCustomerData = defaultCustomerData({
-            ...data,
+            ...formattedData,
             ...customerData,
           });
           await setDoc(newCustomerRef, newCustomerData);
@@ -207,7 +216,7 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
 
       // Prepare the invoice data
       const invoiceData = {
-        ...data,
+        ...formattedData,
         ...currentCustomerData,
         services,
         customerId: currentCustomerId, // For easier reference in global invoices
@@ -248,11 +257,26 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
                 {inputs.map((input) => (
                   <div className="formInput" key={input.id}>
                     <label>{input.label}</label>
-                    {input.type === "select" && !input.multiSelect && (
+                    {input.id === "start" || input.id === "end" ? (
+                      <DatePicker
+                        selected={data[input.id]} // Bind the DatePicker to the `data` state
+                        className="datePicker"
+                        onChange={(date) =>
+                          setData((prevData) => ({
+                            ...prevData,
+                            [input.id]: date,
+                          }))
+                        }
+                        showTimeSelect
+                        dateFormat="Pp" // Example: 12/18/2024, 4:00 PM
+                        timeIntervals={30} // Allow only 30-minute intervals
+                        placeholderText={`Select ${input.label.toLowerCase()}`}
+                      />
+                    ) : input.type === "select" && !input.multiSelect ? (
                       <select
                         id={input.id}
                         onChange={handleInput}
-                        value={data[input.id] || customerData[input.id] || ""}
+                        value={data[input.id] || ""}
                       >
                         <option value="" disabled>
                           {input.placeholder}
@@ -263,21 +287,16 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
                           </option>
                         ))}
                       </select>
+                    ) : (
+                      <input
+                        id={input.id}
+                        type={input.type}
+                        placeholder={input.placeholder}
+                        onChange={handleInput}
+                        value={data[input.id] || ""}
+                        required={input.required || false}
+                      />
                     )}
-                    {input.type !== "select" &&
-                      input.type !== "multi-select" && (
-                        <input
-                          id={input.id}
-                          type={input.type}
-                          placeholder={input.placeholder}
-                          onChange={handleInput}
-                          value={data[input.id] || ""}
-                          step={
-                            input.type === "datetime-local" ? 1800 : undefined
-                          }
-                          required={input.required ? input.required : false}
-                        />
-                      )}
                   </div>
                 ))}
 

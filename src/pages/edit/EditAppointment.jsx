@@ -18,15 +18,14 @@ import {
   getCustomerByName,
   getGlobalInvoiceDocument,
 } from "../../helpers/queries";
-import {
-  invoiceType,
-  serviceType,
-  vehicleType,
-} from "../../helpers/defaultData";
+import { serviceType, vehicleType } from "../../helpers/defaultData";
 import { useCompanyContext } from "../../context/CompanyContext";
+import { serviceInputs } from "../../formSource";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 const EditAppointment = ({ inputs, title, collectionName }) => {
-  const [data, setData] = useState({});
+  const [data, setData] = useState({ start: null, end: null });
   const [customerName, setCustomerName] = useState(""); // Store customer name
   const [customerId, setCustomerId] = useState(""); // Store customer ID after creation or fetch
   const [globalInvoiceId, setGlobalInvoiceId] = useState("");
@@ -60,7 +59,15 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
 
         if (docSnap.exists()) {
           const currentAppointmentData = docSnap.data();
-          setData(currentAppointmentData);
+          setData({
+            ...currentAppointmentData,
+            start: currentAppointmentData.start
+              ? new Date(currentAppointmentData.start)
+              : null,
+            end: currentAppointmentData.end
+              ? new Date(currentAppointmentData.end)
+              : null,
+          });
           setServices(currentAppointmentData.services);
           setCustomerName(currentAppointmentData.displayName);
         } else {
@@ -78,7 +85,10 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
     const id = e.target.id;
     const value = e.target.value;
 
-    setData({ ...data, [id]: value });
+    setData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
   };
 
   const handleServiceChange = (e, field) => {
@@ -116,6 +126,12 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
   // Fetch or create customer, then add invoice
   const handleEdit = async (e) => {
     e.preventDefault();
+
+    const formattedData = {
+      ...data,
+      start: data.start ? data.start.toISOString() : null,
+      end: data.end ? data.end.toISOString() : null,
+    };
 
     try {
       let currentCustomerId = customerId;
@@ -166,7 +182,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
         );
         currentGlobalInvoiceId = newGlobalInvoiceRef.id;
         batch.set(newGlobalInvoiceRef, {
-          ...data,
+          ...formattedData,
           services,
           timeStamp: serverTimestamp(),
         });
@@ -198,11 +214,26 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
         appointmentId
       );
 
+      const customerRef = doc(
+        db,
+        selectedCompany,
+        "management",
+        "customers",
+        currentCustomerId
+      );
+
       const invoiceData = {
-        ...data,
+        ...formattedData,
         services,
         customerId: currentCustomerId,
         timeStamp: serverTimestamp(),
+      };
+
+      const updatedCustomerData = {
+        ...customerData,
+        email: formattedData.email || "",
+        streetAddress1: formattedData.streetAddress1 || "",
+        phone: formattedData.phone || "",
       };
 
       // Ensure documents exist or set them if not
@@ -213,6 +244,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
         batch.set(globalInvoiceRef, invoiceData, { merge: true });
       }
 
+      // Update customer invoice
       const customerInvoiceSnap = await getDoc(customerInvoiceRef);
       if (customerInvoiceSnap.exists()) {
         batch.update(customerInvoiceRef, invoiceData);
@@ -220,11 +252,20 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
         batch.set(customerInvoiceRef, invoiceData, { merge: true });
       }
 
+      // Update appointment data with invoice data
       const appointmentSnap = await getDoc(appointmentRef);
       if (appointmentSnap.exists()) {
         batch.update(appointmentRef, invoiceData);
       } else {
         batch.set(appointmentRef, invoiceData, { merge: true });
+      }
+
+      // Update customer info if changed
+      const customerSnap = await getDoc(customerRef);
+      if (customerSnap.exists()) {
+        batch.update(customerRef, updatedCustomerData);
+      } else {
+        batch.set(customerRef, updatedCustomerData, { merge: true });
       }
 
       // Commit the batch
@@ -263,7 +304,22 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
                 {inputs.map((input) => (
                   <div className="formInput" key={input.id}>
                     <label>{input.label}</label>
-                    {input.type === "select" && !input.multiSelect && (
+                    {input.id === "start" || input.id === "end" ? (
+                      <DatePicker
+                        selected={data[input.id]} // Bind the DatePicker to the `data` state
+                        className="datePicker"
+                        onChange={(date) =>
+                          setData((prevData) => ({
+                            ...prevData,
+                            [input.id]: date,
+                          }))
+                        }
+                        showTimeSelect
+                        dateFormat="Pp" // Example: 12/18/2024, 4:00 PM
+                        timeIntervals={30} // Allow only 30-minute intervals
+                        placeholderText={`Select ${input.label.toLowerCase()}`}
+                      />
+                    ) : input.type === "select" && !input.multiSelect ? (
                       <select
                         id={input.id}
                         onChange={handleInput}
@@ -278,18 +334,16 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
                           </option>
                         ))}
                       </select>
+                    ) : (
+                      <input
+                        id={input.id}
+                        type={input.type}
+                        placeholder={input.placeholder}
+                        onChange={handleInput}
+                        value={data[input.id] || ""}
+                        required={input.required || false}
+                      />
                     )}
-                    {input.type !== "select" &&
-                      input.type !== "multi-select" && (
-                        <input
-                          id={input.id}
-                          type={input.type}
-                          placeholder={input.placeholder}
-                          onChange={handleInput}
-                          value={data[input.id] || ""}
-                          required={input.required ? input.required : false}
-                        />
-                      )}
                   </div>
                 ))}
 
@@ -336,63 +390,38 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
                       }
                     />
                   )}
-                  <input
-                    type="text"
-                    placeholder="Code"
-                    value={newService.code}
-                    onChange={(e) =>
-                      setNewService({
-                        ...newService,
-                        code: e.target.value,
-                      })
-                    }
-                  />
-                  <select
-                    value={newService.itype}
-                    onChange={(e) => handleServiceChange(e, "itype")}
-                  >
-                    <option value="" disabled>
-                      Invoice Type
-                    </option>
-                    {invoiceType.map((option, index) => (
-                      <option key={index} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                  <input
-                    type="number"
-                    placeholder="Quantity"
-                    value={newService.quantity ? newService.quantity : 1}
-                    onChange={(e) =>
-                      setNewService({
-                        ...newService,
-                        quantity: e.target.value,
-                      })
-                    }
-                  />
-                  <input
-                    type="number"
-                    placeholder="Price"
-                    value={newService.price}
-                    onChange={(e) =>
-                      setNewService({
-                        ...newService,
-                        price: e.target.value,
-                      })
-                    }
-                  />
-                  <input
-                    type="text"
-                    placeholder="Notes"
-                    value={newService.notes}
-                    onChange={(e) =>
-                      setNewService({
-                        ...newService,
-                        notes: e.target.value,
-                      })
-                    }
-                  />
+                  {serviceInputs.map((input) =>
+                    input.type === "select" ? (
+                      <select
+                        key={input.id}
+                        value={newService[input.id] || ""}
+                        onChange={(e) => handleServiceChange(e, input.id)}
+                      >
+                        <option value="" disabled>
+                          {input.placeholder}
+                        </option>
+                        {input.options &&
+                          input.options.map((option, index) => (
+                            <option key={index} value={option}>
+                              {option}
+                            </option>
+                          ))}
+                      </select>
+                    ) : (
+                      <input
+                        key={input.id}
+                        type={input.type}
+                        placeholder={input.placeholder}
+                        value={newService[input.id] || input.defaultValue || ""}
+                        onChange={(e) =>
+                          setNewService({
+                            ...newService,
+                            [input.id]: e.target.value,
+                          })
+                        }
+                      />
+                    )
+                  )}
                   <IconButton onClick={handleAddService}>
                     <AddCircleOutline />
                   </IconButton>
