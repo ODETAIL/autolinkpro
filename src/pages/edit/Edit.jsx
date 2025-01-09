@@ -8,99 +8,99 @@ import { useNavigate, useParams } from "react-router-dom";
 import { useCompanyContext } from "../../context/CompanyContext";
 
 const Edit = ({ inputs, title, collectionName }) => {
-	const [data, setData] = useState({});
-	const { userId } = useParams();
-	const { selectedCompany } = useCompanyContext();
-	const navigate = useNavigate();
+  const [data, setData] = useState({});
+  const { userId } = useParams();
+  const { selectedCompany } = useCompanyContext();
+  const navigate = useNavigate();
 
-	useEffect(() => {
-		const fetchData = async () => {
-			try {
-				const docRef = doc(
-					db,
-					selectedCompany,
-					"management",
-					collectionName,
-					userId
-				);
-				console.log(docRef);
-				const docSnap = await getDoc(docRef);
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const docRef = doc(
+          db,
+          selectedCompany,
+          "management",
+          collectionName,
+          userId
+        );
 
-				if (docSnap.exists()) {
-					setData(docSnap.data());
-				} else {
-					setData({ error: "Document not found" });
-				}
-			} catch (error) {
-				console.error("Error fetching document: ", error);
-			}
-		};
+        const docSnap = await getDoc(docRef);
 
-		fetchData();
-	}, [collectionName, userId, selectedCompany]);
+        if (docSnap.exists()) {
+          setData(docSnap.data());
+        } else {
+          setData({ error: "Document not found" });
+        }
+      } catch (error) {
+        console.error("Error fetching document: ", error);
+      }
+    };
 
-	const handleInput = (e) => {
-		const id = e.target.id;
-		const value = e.target.value;
+    fetchData();
+  }, [collectionName, userId, selectedCompany]);
 
-		setData((prevData) => ({
-			...prevData,
-			[id]: value,
-		}));
-	};
+  const handleInput = (e) => {
+    const id = e.target.id;
+    const value = e.target.value;
 
-	const handleEdit = async (e) => {
-		e.preventDefault();
-		try {
-			const docRef = doc(
-				db,
-				selectedCompany,
-				"management",
-				collectionName,
-				userId
-			);
-			await updateDoc(docRef, {
-				...data,
-				timeStamp: serverTimestamp(),
-			});
-			navigate(-1);
-		} catch (err) {
-			console.error("Error updating document:", err);
-		}
-	};
+    setData((prevData) => ({
+      ...prevData,
+      [id]: value,
+    }));
+  };
 
-	return (
-		<div className="new">
-			<Sidebar />
-			<div className="newContainer">
-				<Navbar />
-				<div className="top">
-					<h1>{title}</h1>
-				</div>
-				<div className="bottom">
-					<div className="right">
-						<form onSubmit={handleEdit}>
-							<div className="formContent">
-								{inputs.map((input) => (
-									<div className="formInput" key={input?.id}>
-										<label>{input?.label}</label>
-										<input
-											id={input?.id}
-											type={input?.type}
-											value={data[input?.id] || ""}
-											placeholder={input?.placeholder}
-											onChange={handleInput}
-										/>
-									</div>
-								))}
-							</div>
-							<button type="submit">Send</button>
-						</form>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
+  const handleEdit = async (e) => {
+    e.preventDefault();
+    try {
+      const docRef = doc(
+        db,
+        selectedCompany,
+        "management",
+        collectionName,
+        userId
+      );
+      await updateDoc(docRef, {
+        ...data,
+        timeStamp: serverTimestamp(),
+      });
+      navigate(-1);
+    } catch (err) {
+      console.error("Error updating document:", err);
+    }
+  };
+
+  return (
+    <div className="new">
+      <Sidebar />
+      <div className="newContainer">
+        <Navbar />
+        <div className="top">
+          <h1>{title}</h1>
+        </div>
+        <div className="bottom">
+          <div className="right">
+            <form onSubmit={handleEdit}>
+              <div className="formContent">
+                {inputs.map((input) => (
+                  <div className="formInput" key={input?.id}>
+                    <label>{input?.label}</label>
+                    <input
+                      id={input?.id}
+                      type={input?.type}
+                      value={data[input?.id] || ""}
+                      placeholder={input?.placeholder}
+                      onChange={handleInput}
+                    />
+                  </div>
+                ))}
+              </div>
+              <button type="submit">Send</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default Edit;

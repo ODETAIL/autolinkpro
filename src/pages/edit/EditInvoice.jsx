@@ -58,19 +58,35 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
             db,
             `${selectedCompany}/management/appointments`
           );
+
+          const customerRef = collection(
+            db,
+            `${selectedCompany}/management/customers`
+          );
+
           const q = query(
             appointmentsRef,
             where("invoiceId", "==", currentInvoiceData.invoiceId)
           );
+
+          const c = query(
+            customerRef,
+            where("displayName", "==", currentInvoiceData.displayName)
+          );
           const appointmentSnapshot = await getDocs(q);
-          if (!appointmentSnapshot.empty) {
+          const customerSnapshot = await getDocs(c);
+
+          if (!appointmentSnapshot.empty && !customerSnapshot.empty) {
             // Get the first matching document
             const appointmentDoc = appointmentSnapshot.docs[0];
+            const customerDoc = customerSnapshot.docs[0];
             const currentAppointmentData = appointmentDoc.data();
+            const currentCustomerData = customerDoc.data();
 
             setData({
               ...currentInvoiceData,
               ...currentAppointmentData,
+              ...currentCustomerData,
               start: currentAppointmentData.start
                 ? new Date(currentAppointmentData.start)
                 : null,
@@ -118,6 +134,7 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
 
       // Fetch current invoice to get customerId
       const docSnap = await getDoc(docRef);
+
       if (!docSnap.exists()) {
         console.error("Invoice document not found");
         return;
@@ -129,6 +146,17 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
         console.error("Customer ID not found in invoice document");
         return;
       }
+
+      const customerDataRef = doc(
+        db,
+        selectedCompany,
+        "management",
+        "customers",
+        customerId
+      );
+
+      const customerSnapshot = await getDoc(customerDataRef);
+      const currentCustomerData = customerSnapshot.data();
 
       // Prepare batch update to apply changes to both documents
       const batch = writeBatch(db);
@@ -157,12 +185,21 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
       const updatedInvoiceData = {
         ...data,
         services,
+        displayName: customerName,
+        timeStamp: serverTimestamp(),
+      };
+
+      const updatedCustomerData = {
+        ...currentCustomerData,
+        ...data,
+        displayName: customerName,
         timeStamp: serverTimestamp(),
       };
 
       // Update both documents in batch
       batch.update(globalInvoiceRef, updatedInvoiceData);
       batch.update(customerInvoiceRef, updatedInvoiceData);
+      batch.update(customerDataRef, updatedCustomerData);
 
       // Commit the batch
       await batch.commit();
