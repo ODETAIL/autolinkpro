@@ -48,70 +48,56 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
           collectionName,
           invoiceUid
         );
-
         const docSnap = await getDoc(docRef);
 
-        if (docSnap.exists()) {
-          const currentInvoiceData = docSnap.data();
-
-          const appointmentsRef = collection(
-            db,
-            `${selectedCompany}/management/appointments`
-          );
-
-          const customerRef = collection(
-            db,
-            `${selectedCompany}/management/customers`
-          );
-
-          const q = query(
-            appointmentsRef,
-            where("invoiceId", "==", currentInvoiceData.invoiceId)
-          );
-
-          const c = query(
-            customerRef,
-            where("displayName", "==", currentInvoiceData.displayName)
-          );
-          const appointmentSnapshot = await getDocs(q);
-          const customerSnapshot = await getDocs(c);
-
-          if (!appointmentSnapshot.empty) {
-            // Get the first matching document
-            const appointmentDoc = appointmentSnapshot.docs[0];
-            const currentAppointmentData = appointmentDoc.data();
-
-            setData({
-              ...currentInvoiceData,
-              ...currentAppointmentData,
-
-              start: currentAppointmentData.start
-                ? new Date(currentAppointmentData.start)
-                : null,
-              end: currentAppointmentData.end
-                ? new Date(currentAppointmentData.end)
-                : null,
-            });
-          } else if (!customerSnapshot.empty) {
-            // Get the first matching document
-            const customerDoc = customerSnapshot.docs[0];
-            const currentCustomerData = customerDoc.data();
-
-            setData({
-              ...currentInvoiceData,
-              ...currentCustomerData,
-            });
-          } else {
-            console.log(
-              "No matching appointment or customer found for this invoiceId."
-            );
-          }
-
-          setServices(currentInvoiceData.services);
-          setCustomerName(currentInvoiceData.displayName);
-        } else {
+        if (!docSnap.exists()) {
           setData({ error: "Document not found" });
+          return;
         }
+
+        const currentInvoiceData = docSnap.data();
+        const invoiceId = currentInvoiceData.invoiceId;
+        const displayName = currentInvoiceData.displayName;
+
+        // Create queries for appointments and customers
+        const appointmentsRef = collection(
+          db,
+          `${selectedCompany}/management/appointments`
+        );
+        const customerRef = collection(
+          db,
+          `${selectedCompany}/management/customers`
+        );
+
+        const [appointmentSnapshot, customerSnapshot] = await Promise.all([
+          getDocs(query(appointmentsRef, where("invoiceId", "==", invoiceId))),
+          getDocs(query(customerRef, where("displayName", "==", displayName))),
+        ]);
+
+        if (!appointmentSnapshot.empty) {
+          const appointmentData = appointmentSnapshot.docs[0].data();
+          setData({
+            ...currentInvoiceData,
+            ...appointmentData,
+            start: appointmentData.start
+              ? new Date(appointmentData.start)
+              : null,
+            end: appointmentData.end ? new Date(appointmentData.end) : null,
+          });
+        } else if (!customerSnapshot.empty) {
+          const customerData = customerSnapshot.docs[0].data();
+          setData({
+            ...currentInvoiceData,
+            ...customerData,
+          });
+        } else {
+          console.log(
+            "No matching appointment or customer found for this invoiceId."
+          );
+        }
+
+        setServices(currentInvoiceData.services);
+        setCustomerName(displayName);
       } catch (error) {
         console.error("Error fetching document: ", error);
       }

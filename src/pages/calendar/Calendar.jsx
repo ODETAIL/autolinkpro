@@ -122,12 +122,14 @@ const Calendar = ({ collectionName, columns }) => {
     const currentEvent = eventClickInfo.event;
     const invoiceId = currentEvent._def.extendedProps.invoiceId;
 
-    // Query Firestore to find the document with the matching `invoiceId`
-    const appointmentsRef = collection(
-      db,
-      `${selectedCompany}/management/${collectionName}`
-    );
-    const q = query(appointmentsRef, where("invoiceId", "==", invoiceId));
+    // Determine the collection reference based on the selected company
+    const collectionPath =
+      selectedCompany === "aztec"
+        ? `${selectedCompany}/management/invoices`
+        : `${selectedCompany}/management/${collectionName}`;
+
+    const collectionRef = collection(db, collectionPath);
+    const q = query(collectionRef, where("invoiceId", "==", invoiceId));
 
     try {
       const querySnapshot = await getDocs(q);
@@ -136,7 +138,9 @@ const Calendar = ({ collectionName, columns }) => {
         // Assume the first matching document is the one we need
         const docSnapshot = querySnapshot.docs[0];
         const docId = docSnapshot.id;
-        navigate(`/${collectionName}/edit/${docId}`);
+        selectedCompany === "aztec"
+          ? navigate(`/invoices/view/${docId}`)
+          : navigate(`/${collectionName}/edit/${docId}`);
       } else {
         console.error("No document found with invoiceId:", invoiceId);
       }
