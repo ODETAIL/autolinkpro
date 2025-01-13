@@ -76,17 +76,15 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
           const appointmentSnapshot = await getDocs(q);
           const customerSnapshot = await getDocs(c);
 
-          if (!appointmentSnapshot.empty && !customerSnapshot.empty) {
+          if (!appointmentSnapshot.empty) {
             // Get the first matching document
             const appointmentDoc = appointmentSnapshot.docs[0];
-            const customerDoc = customerSnapshot.docs[0];
             const currentAppointmentData = appointmentDoc.data();
-            const currentCustomerData = customerDoc.data();
 
             setData({
               ...currentInvoiceData,
               ...currentAppointmentData,
-              ...currentCustomerData,
+
               start: currentAppointmentData.start
                 ? new Date(currentAppointmentData.start)
                 : null,
@@ -94,8 +92,19 @@ const EditInvoice = ({ inputs, title, collectionName }) => {
                 ? new Date(currentAppointmentData.end)
                 : null,
             });
+          } else if (!customerSnapshot.empty) {
+            // Get the first matching document
+            const customerDoc = customerSnapshot.docs[0];
+            const currentCustomerData = customerDoc.data();
+
+            setData({
+              ...currentInvoiceData,
+              ...currentCustomerData,
+            });
           } else {
-            console.log("No matching appointment found for this invoiceId.");
+            console.log(
+              "No matching appointment or customer found for this invoiceId."
+            );
           }
 
           setServices(currentInvoiceData.services);

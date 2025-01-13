@@ -21,7 +21,7 @@ export const calculateGST = (price) => {
     return 0; // Return default value
   }
 
-  return parsedPrice * gstRate;
+  return (parsedPrice * gstRate).toFixed(2);
 };
 
 export const calculateTotalPrice = (services) => {
