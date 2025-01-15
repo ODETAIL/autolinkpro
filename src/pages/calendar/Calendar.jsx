@@ -20,7 +20,7 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import { colors } from "../../helpers/defaultData";
-import { DeleteOutline } from "@mui/icons-material";
+import { DeleteOutline, EditOutlined } from "@mui/icons-material";
 import { useCompanyContext } from "../../context/CompanyContext";
 
 const Calendar = ({ collectionName, columns }) => {
@@ -57,8 +57,8 @@ const Calendar = ({ collectionName, columns }) => {
       ...event,
       id: index,
       title: event.title,
-      start: event.start ? new Date(event.start).toISOString() : null, // Validate `start`
-      end: event.end ? new Date(event.end).toISOString() : null, // Validate `end`
+      start: event.start ? new Date(event.start).toISOString() : null,
+      end: event.end ? new Date(event.end).toISOString() : null,
       extendedProps: event.extendedProps,
     }));
 
@@ -185,6 +185,34 @@ const Calendar = ({ collectionName, columns }) => {
     }
   };
 
+  const handleEditAppointment = async (invoiceId) => {
+    // Determine the collection reference based on the selected company
+    const collectionPath =
+      selectedCompany === "aztec"
+        ? `${selectedCompany}/management/invoices`
+        : `${selectedCompany}/management/${collectionName}`;
+
+    const collectionRef = collection(db, collectionPath);
+    const q = query(collectionRef, where("invoiceId", "==", invoiceId));
+
+    try {
+      const querySnapshot = await getDocs(q);
+
+      if (!querySnapshot.empty) {
+        // Assume the first matching document is the one we need
+        const docSnapshot = querySnapshot.docs[0];
+        const docId = docSnapshot.id;
+        selectedCompany === "aztec"
+          ? navigate(`/invoices/view/${docId}`)
+          : navigate(`/${collectionName}/edit/${docId}`);
+      } else {
+        console.error("No document found with invoiceId:", invoiceId);
+      }
+    } catch (error) {
+      console.error("Error updating event in Firestore:", error);
+    }
+  };
+
   return (
     <div className="calendar">
       <Sidebar />
@@ -220,12 +248,6 @@ const Calendar = ({ collectionName, columns }) => {
                       })
                     } // Call handleEventClick when the card is clicked
                   >
-                    <DeleteOutline
-                      className="deleteIcon"
-                      onClick={() =>
-                        handleDeleteAppointment(event.extendedProps.invoiceId)
-                      }
-                    />
                     <div className="eventInfo">
                       <h3 className="eventTitle">{event.title}</h3>
                       <p className="eventDescription">
@@ -240,6 +262,24 @@ const Calendar = ({ collectionName, columns }) => {
                           year: "numeric",
                         })}
                       </span>
+                    </div>
+                    <div className="eventActions">
+                      <DeleteOutline
+                        className="deleteIcon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleDeleteAppointment(
+                            event.extendedProps.invoiceId
+                          );
+                        }}
+                      />
+                      <EditOutlined
+                        className="editIcon"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleEditAppointment(event.extendedProps.invoiceId);
+                        }}
+                      />
                     </div>
                   </div>
                 ))}
@@ -270,8 +310,6 @@ const Calendar = ({ collectionName, columns }) => {
               // eventContent={renderEventContent}
               eventsSet={(events) => setAppointments(events)}
               eventDrop={(event) => handleAppointmentDrop(event)}
-              eventBackgroundColor={""}
-              eventTextColor={""}
             />
           </div>
         </div>

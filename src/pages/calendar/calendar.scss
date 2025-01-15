@@ -1,114 +1,131 @@
 .calendar {
-	display: flex;
-	width: 100%;
-	.calendarContainer {
-		flex: 6;
+  display: flex;
+  width: 100%;
+  .calendarContainer {
+    flex: 6;
 
-		.top {
-			padding: 20px;
-			display: flex;
-			gap: 20px;
+    .top {
+      padding: 20px;
+      display: flex;
+      gap: 20px;
 
-			.left {
-				flex: 1;
-				-webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-				box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-				padding: 20px;
-				position: relative;
+      .left {
+        flex: 1;
+        -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+        box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+        padding: 20px;
+        position: relative;
 
-				.eventCard {
-					display: flex;
-					justify-content: space-between;
-					align-items: flex-start;
-					opacity: 0.8;
-					border-radius: 8px;
-					padding: 16px;
-					gap: 5px;
-					margin-top: 1rem;
-					box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-					position: relative;
-					cursor: pointer;
+        .eventCard {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          opacity: 0.8;
+          border-radius: 8px;
+          padding: 16px;
+          gap: 10px;
+          margin-top: 1rem;
+          box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+          position: relative;
+          cursor: pointer;
 
-					.deleteIcon {
-						position: absolute;
-						bottom: 8px;
-						right: 8px;
-						color: lightgray;
-						cursor: pointer;
-						font-size: 1.2rem;
-						opacity: 0.7;
-						transition: opacity 0.2s;
-					}
+          .eventInfo {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+          }
 
-					.deleteIcon:hover {
-						opacity: 1;
-					}
+          .eventActions {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 5px;
+          }
 
-					.eventInfo {
-						display: flex;
-						flex-direction: column;
-					}
-					.eventTitle {
-						font-size: 1rem;
-						font-weight: bold;
-						color: lightgray;
-						margin: 0;
-					}
-					.eventDescription {
-						font-size: 0.9rem;
-						color: lightgray;
-						opacity: 0.8;
-						margin: 4px 0 0 0; /* Spacing below the title */
-					}
-					.eventDateBox {
-						background-color: rgba(0, 0, 0, 0.5);
-						padding: 5px;
-						border-radius: 5px;
+          .deleteIcon {
+            color: rgb(251, 78, 78);
+          }
 
-						.eventDate {
-							font-size: 0.9rem;
-							color: lightgray;
-							align-self: flex-start;
-							white-space: nowrap;
-							opacity: 0.8;
-						}
-					}
-				}
-			}
+          .editIcon {
+            color: lightgreen;
+          }
 
-			.right {
-				flex: 4;
-				-webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-				box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-				padding: 20px;
-				position: relative;
-			}
-		}
+          .deleteIcon,
+          .editIcon {
+            font-size: 1.3rem; /* Same size for both */
+            cursor: pointer;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+          }
 
-		.eventTitleContainer {
-			width: 100%;
-			font-size: 24px;
-			color: gray;
-			margin-bottom: 2rem;
-			display: flex;
-			align-items: center;
-			justify-content: space-between;
-			flex-wrap: wrap;
+          .deleteIcon:hover,
+          .editIcon:hover {
+            opacity: 1;
+          }
 
-			.title {
-				font-size: 18px;
-				color: lightgray;
-			}
-			.link {
-				text-decoration: none;
-				color: green;
-				font-size: 14px;
-				font-weight: 400;
-				border: 1px solid green;
-				padding: 5px;
-				border-radius: 5px;
-				cursor: pointer;
-			}
-		}
-	}
+          .eventTitle {
+            font-size: 1rem;
+            font-weight: bold;
+            color: lightgray;
+            margin: 0;
+          }
+
+          .eventDescription {
+            font-size: 0.9rem;
+            color: lightgray;
+            opacity: 0.8;
+            margin: 4px 0 0 0;
+          }
+
+          .eventDateBox {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 5px;
+            border-radius: 5px;
+
+            .eventDate {
+              font-size: 0.9rem;
+              color: lightgray;
+              white-space: nowrap;
+              opacity: 0.8;
+            }
+          }
+        }
+      }
+
+      .right {
+        flex: 4;
+        -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+        box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+        padding: 20px;
+        position: relative;
+      }
+    }
+
+    .eventTitleContainer {
+      width: 100%;
+      font-size: 24px;
+      color: gray;
+      margin-bottom: 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+
+      .title {
+        font-size: 18px;
+        color: lightgray;
+      }
+
+      .link {
+        text-decoration: none;
+        color: green;
+        font-size: 14px;
+        font-weight: 400;
+        border: 1px solid green;
+        padding: 5px;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+    }
+  }
 }
