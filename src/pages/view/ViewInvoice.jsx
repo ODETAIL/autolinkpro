@@ -103,7 +103,7 @@ const ViewInvoice = ({ collectionName }) => {
 				services_table: servicesTable,
 				total_due: calculateTotalPrice(data?.services).toFixed(2),
 				subtotal: subtotal.toFixed(2),
-				gst: gst.toFixed(2),
+				gst: gst,
 				pdf_link: pdfUrl,
 				gst_number:
 					selectedCompany === "odetail"
