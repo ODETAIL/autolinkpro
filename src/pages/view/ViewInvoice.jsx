@@ -179,6 +179,9 @@ const ViewInvoice = ({ collectionName }) => {
 									<span className="itemValue">
 										{data?.email}
 									</span>
+									<span className="itemValue">
+										{data?.streetAddress1}
+									</span>
 								</div>
 								<Divider className="divider" />
 								<div className="detailItem">
