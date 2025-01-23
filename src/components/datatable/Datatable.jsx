@@ -202,6 +202,12 @@ const Datatable = ({ collectionName, columns, customerId }) => {
       <DataGrid
         className="datagrid"
         rows={filteredData}
+        sortModel={[
+          {
+            field: "status",
+            sort: "asc",
+          },
+        ]}
         columns={customerViewColumns}
         pageSize={9}
         rowsPerPageOptions={[9]}

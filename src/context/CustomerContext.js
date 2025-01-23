@@ -36,7 +36,7 @@ export const CustomerContextProvider = ({ children }) => {
     }
 
     const matches = state.allCustomers.filter((customer) =>
-      customer.displayName.toLowerCase().includes(name.toLowerCase())
+      customer.displayName?.toLowerCase().includes(name.toLowerCase())
     );
     setMatchingCustomers(matches);
   };
