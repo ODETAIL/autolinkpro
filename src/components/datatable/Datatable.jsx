@@ -18,6 +18,12 @@ const Datatable = ({ collectionName, columns, customerId }) => {
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
   const { selectedCompany } = useCompanyContext();
+  const [sortModel, setSortModel] = useState([
+    {
+      field: "status",
+      sort: "asc",
+    },
+  ]);
 
   useEffect(() => {
     // LISTEN (REALTIME)
@@ -202,16 +208,12 @@ const Datatable = ({ collectionName, columns, customerId }) => {
       <DataGrid
         className="datagrid"
         rows={filteredData}
-        sortModel={[
-          {
-            field: "status",
-            sort: "asc",
-          },
-        ]}
         columns={customerViewColumns}
         pageSize={9}
         rowsPerPageOptions={[9]}
         checkboxSelection
+        sortModel={sortModel}
+        onSortModelChange={(newSortModel) => setSortModel(newSortModel)}
         components={{
           Toolbar: GridToolbar,
         }}

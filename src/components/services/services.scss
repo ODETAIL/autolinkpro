@@ -1,0 +1,59 @@
+/* New styles for the service input group */
+.serviceContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  justify-content: space-around;
+
+  .serviceInputGroup {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 30px;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+  }
+
+  .servicesList {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+
+    .chipItem {
+      background-color: rgba(255, 217, 0, 0.05);
+      color: goldenrod;
+      cursor: pointer;
+      transition: transform 0.2s ease-in-out;
+
+      &:hover {
+        transform: scale(0.9);
+      }
+    }
+  }
+
+  .serviceInputGroup input,
+  .serviceInputGroup select {
+    width: auto; /* Allows inputs to fit content */
+    border: none;
+    border-bottom: 1px solid gray;
+    background-color: transparent;
+    color: gray;
+    cursor: pointer;
+  }
+
+  .serviceInputGroup button {
+    padding: 5px 10px;
+    color: white;
+    cursor: pointer;
+
+    transition: transform 0.2s ease-in-out !important;
+    &:hover {
+      transform: scale(0.9) !important; // Shrinks slightly on hover
+    }
+
+    svg {
+      font-size: 2rem;
+    }
+  }
+}

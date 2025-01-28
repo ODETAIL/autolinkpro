@@ -12,8 +12,6 @@ import {
 } from "firebase/firestore";
 import { db } from "../../firebase";
 import { useNavigate, useParams } from "react-router-dom";
-import { Chip, IconButton } from "@mui/material";
-import { AddCircleOutline } from "@mui/icons-material";
 import {
   getCustomerByName,
   getGlobalInvoiceDocument,
@@ -23,6 +21,7 @@ import { useCompanyContext } from "../../context/CompanyContext";
 import { serviceInputs } from "../../formSource";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import ServiceDetails from "../../components/services/ServiceDetails";
 
 const EditAppointment = ({ inputs, title, collectionName }) => {
   const [data, setData] = useState({ start: null, end: null });
@@ -30,17 +29,7 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
   const [customerId, setCustomerId] = useState(""); // Store customer ID after creation or fetch
   const [globalInvoiceId, setGlobalInvoiceId] = useState("");
   const [customerData, setCustomerData] = useState({});
-  const [newService, setNewService] = useState({
-    vtype: "",
-    name: "",
-    code: "",
-    price: "",
-    quantity: 1,
-    itype: "",
-    notes: "",
-  });
   const [services, setServices] = useState([]);
-  const [isCustomService, setIsCustomService] = useState(false);
   const { appointmentId } = useParams();
   const { selectedCompany } = useCompanyContext();
   const navigate = useNavigate();
@@ -89,38 +78,6 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
       ...prevData,
       [id]: value,
     }));
-  };
-
-  const handleServiceChange = (e, field) => {
-    const selectedValue = e.target.value;
-    if (selectedValue === "Add Custom") {
-      setIsCustomService(true);
-      setNewService({ ...newService, [field]: "" });
-    } else {
-      setIsCustomService(false);
-      setNewService({ ...newService, [field]: selectedValue });
-    }
-  };
-
-  const handleAddService = () => {
-    if (newService.name && newService.code && newService.price) {
-      setServices([...services, newService]);
-      setNewService({
-        vtype: "",
-        name: "",
-        code: "",
-        price: "",
-        quantity: 1,
-        itype: "",
-        notes: "",
-      }); // Reset service input fields
-      setIsCustomService(false); // Reset custom service option
-    }
-  };
-
-  // Handle removing a service entry
-  const handleDeleteService = (index) => {
-    setServices(services.filter((_, i) => i !== index));
   };
 
   // Fetch or create customer, then add invoice
@@ -348,101 +305,14 @@ const EditAppointment = ({ inputs, title, collectionName }) => {
                 ))}
 
                 {/* Service details input fields */}
-                <div className="serviceInputGroup">
-                  <h3>Add Service</h3>
-                  <select
-                    value={newService.vtype}
-                    onChange={(e) => handleServiceChange(e, "vtype")}
-                  >
-                    <option value="" disabled>
-                      Select Vehicle Type
-                    </option>
-                    {vehicleType.map((option, index) => (
-                      <option key={index} value={option}>
-                        {option}
-                      </option>
-                    ))}
-                  </select>
-                  {!isCustomService ? (
-                    <select
-                      value={newService.name}
-                      onChange={(e) => handleServiceChange(e, "name")}
-                    >
-                      <option value="" disabled>
-                        Select Service
-                      </option>
-                      {serviceType.map((option, index) => (
-                        <option key={index} value={option}>
-                          {option}
-                        </option>
-                      ))}
-                    </select>
-                  ) : (
-                    <input
-                      type="text"
-                      placeholder="Custom Service"
-                      value={newService.name}
-                      onChange={(e) =>
-                        setNewService({
-                          ...newService,
-                          name: e.target.value,
-                        })
-                      }
-                    />
-                  )}
-                  {serviceInputs.map((input) =>
-                    input.type === "select" ? (
-                      <select
-                        key={input.id}
-                        value={newService[input.id] || ""}
-                        onChange={(e) => handleServiceChange(e, input.id)}
-                      >
-                        <option value="" disabled>
-                          {input.placeholder}
-                        </option>
-                        {input.options &&
-                          input.options.map((option, index) => (
-                            <option key={index} value={option}>
-                              {option}
-                            </option>
-                          ))}
-                      </select>
-                    ) : (
-                      <input
-                        key={input.id}
-                        type={input.type}
-                        placeholder={input.placeholder}
-                        value={newService[input.id] || input.defaultValue || ""}
-                        onChange={(e) =>
-                          setNewService({
-                            ...newService,
-                            [input.id]: e.target.value,
-                          })
-                        }
-                      />
-                    )
-                  )}
-                  <IconButton onClick={handleAddService}>
-                    <AddCircleOutline />
-                  </IconButton>
-                </div>
-
-                {/* Display added services */}
-                <div className="servicesList">
-                  {services.map((service, index) => (
-                    <div key={index} className="serviceItem">
-                      <Chip
-                        label={
-                          selectedCompany === "aztec"
-                            ? `${service.name} - ${service.code} - $${service.price}`
-                            : `${service.name} - $${service.price}`
-                        }
-                        onDelete={() => handleDeleteService(index)}
-                        className="chipItem"
-                      />
-                    </div>
-                  ))}
-                </div>
+                <ServiceDetails
+                  services={services}
+                  setServices={setServices}
+                  vehicleType={vehicleType}
+                  serviceType={serviceType}
+                  serviceInputs={serviceInputs}
+                  companyName={selectedCompany}
+                />
               </div>
               <button type="submit">Update</button>
             </form>
