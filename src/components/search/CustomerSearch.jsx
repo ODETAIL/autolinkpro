@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useCustomerContext } from "../../context/CustomerContext";
 import "./customer-search.scss";
 
-const CustomerSearch = ({ onCustomerSelect }) => {
+const CustomerSearch = ({ onCustomerSelect, optionalCustomerName }) => {
   const { matchingCustomers, searchCustomers } = useCustomerContext();
   const [searchTerm, setSearchTerm] = useState("");
   const [showDropdown, setShowDropdown] = useState(false);
@@ -10,11 +10,21 @@ const CustomerSearch = ({ onCustomerSelect }) => {
 
   let handleBlurTimeout;
 
+  useEffect(() => {
+    setSearchTerm(optionalCustomerName); // Update search term when defaultCustomerName changes
+  }, [optionalCustomerName]);
+
   const handleSearch = (e) => {
     const value = e.target.value;
     setSearchTerm(value);
-    searchCustomers(value); // Trigger the search functionality
-    setShowDropdown(true); // Show the dropdown while searching
+
+    // Debounce search calls
+    clearTimeout(handleBlurTimeout);
+    handleBlurTimeout = setTimeout(() => {
+      searchCustomers(value); // Trigger search after delay
+    }, 100);
+
+    setShowDropdown(true);
   };
 
   const handleSelect = (customer) => {

@@ -1,186 +1,188 @@
 .single {
-	display: flex;
-	width: 100%;
-	.singleContainer {
-		flex: 6;
+  display: flex;
+  width: 100%;
+  .singleContainer {
+    flex: 6;
 
-		.top {
-			padding: 20px;
-			display: flex;
-			gap: 20px;
+    .top {
+      padding: 20px;
+      display: flex;
+      gap: 20px;
 
-			.left {
-				flex: 1;
-				-webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-				box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-				padding: 20px;
-				position: relative;
+      .left {
+        flex: 1;
+        -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+        box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+        padding: 20px;
+        position: relative;
+        border-radius: 0.5rem;
 
-				.editButton {
-					position: absolute;
-					top: 0;
-					right: 0;
-					padding: 5px;
-					font-size: 12px;
-					color: #7451f8;
-					background-color: #7551f818;
-					cursor: pointer;
-					border-radius: 0px 0px 0px 5px;
-				}
+        .editButton {
+          position: absolute;
+          top: 0;
+          right: 0;
+          padding: 5px;
+          font-size: 12px;
+          color: #7451f8;
+          background-color: #7551f818;
+          cursor: pointer;
+          border-radius: 0px 0px 0px 5px;
+        }
 
-				.divider {
-					color: grey;
-					border-color: grey;
-				}
+        .divider {
+          color: grey;
+          border-color: grey;
+        }
 
-				.item {
-					display: flex;
-					gap: 20px;
+        .item {
+          display: flex;
+          gap: 20px;
 
-					.itemImg {
-						width: 100px;
-						height: 100px;
-						border-radius: 50%;
-						object-fit: cover;
-					}
+          .itemImg {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            object-fit: cover;
+          }
 
-					.details {
-						display: flex;
-						flex-direction: column;
-						justify-content: space-between;
-						gap: 15px;
+          .details {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 15px;
 
-						.itemTitle {
-							margin-bottom: 10px;
-							color: #555;
-						}
+            .itemTitle {
+              margin-bottom: 10px;
+              color: #555;
+            }
 
-						.detailItem {
-							margin-bottom: 10px;
-							font-size: 1rem;
-							display: flex;
-							flex-direction: column;
+            .detailItem {
+              margin-bottom: 10px;
+              font-size: 1rem;
+              display: flex;
+              flex-direction: column;
 
-							.itemKey {
-								font-weight: bold;
-								color: gray;
-							}
-						}
+              .itemKey {
+                font-weight: bold;
+                color: gray;
+              }
+            }
 
-						.serviceContainer {
-							display: flex;
-							justify-content: space-between;
-							align-items: center;
+            .serviceContainer {
+              display: flex;
+              justify-content: space-between;
+              align-items: center;
 
-							.serviceItemKey {
-								font-weight: bold;
-								color: gray;
-								text-transform: uppercase;
-							}
+              .serviceItemKey {
+                font-weight: bold;
+                color: gray;
+                text-transform: uppercase;
+              }
 
-							.serviceNameContainer {
-								display: flex;
-								flex-direction: column;
-							}
-							.serviceItemValue {
-								font-style: italic;
-								font-size: 12px;
-								opacity: 0.6;
-								text-transform: uppercase;
-							}
-						}
+              .serviceNameContainer {
+                display: flex;
+                flex-direction: column;
+              }
+              .serviceItemValue {
+                font-style: italic;
+                font-size: 12px;
+                opacity: 0.6;
+                text-transform: uppercase;
+              }
+            }
 
-						.subtotalPrice {
-							color: gray;
-							font-size: 1rem;
-						}
+            .subtotalPrice {
+              color: gray;
+              font-size: 1rem;
+            }
 
-						.totalPrice {
-							font-weight: bold;
-							color: gray;
-							font-size: 1.5rem;
-						}
-					}
-				}
-			}
+            .totalPrice {
+              font-weight: bold;
+              color: gray;
+              font-size: 1.5rem;
+            }
+          }
+        }
+      }
 
-			.right {
-				flex: 2;
-				-webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-				box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-				padding: 20px;
-				position: relative;
+      .right {
+        flex: 2;
+        -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+        box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+        padding: 20px;
+        position: relative;
+        border-radius: 0.5rem;
 
-				.buttonsWrapper {
-					display: flex;
-					flex-direction: row;
-					position: absolute;
+        .buttonsWrapper {
+          display: flex;
+          flex-direction: row;
+          position: absolute;
 
-					top: 0;
-					right: 0;
+          top: 0;
+          right: 0;
 
-					.downloadButton {
-						padding: 8px;
-						font-size: 12px;
-						color: #f85151;
-						background-color: #f8515115;
-						cursor: pointer;
-						border-radius: 0px 0px 0px 5px;
-						text-decoration: none;
-						display: inline-block;
-					}
-					.saveButton {
-						padding: 8px;
-						font-size: 12px;
-						color: #edf851;
-						background-color: #edf85111;
-						cursor: pointer;
-					}
+          .downloadButton {
+            padding: 8px;
+            font-size: 12px;
+            color: #f85151;
+            background-color: #f8515115;
+            cursor: pointer;
+            border-radius: 0px 0px 0px 5px;
+            text-decoration: none;
+            display: inline-block;
+          }
+          .saveButton {
+            padding: 8px;
+            font-size: 12px;
+            color: #edf851;
+            background-color: #edf85111;
+            cursor: pointer;
+          }
 
-					.sendButton {
-						padding: 8px;
-						font-size: 12px;
-						color: #516af8;
-						background-color: #516af817;
-						cursor: pointer;
-					}
-				}
+          .sendButton {
+            padding: 8px;
+            font-size: 12px;
+            color: #516af8;
+            background-color: #516af817;
+            cursor: pointer;
+          }
+        }
 
-				.item {
-					display: flex;
+        .item {
+          display: flex;
 
-					.details {
-						display: flex;
-						flex-direction: column;
-						justify-content: space-between;
-						gap: 15px;
-						flex: 1;
+          .details {
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            gap: 15px;
+            flex: 1;
 
-						.itemTitle {
-							margin-bottom: 10px;
-							color: #555;
-						}
+            .itemTitle {
+              margin-bottom: 10px;
+              color: #555;
+            }
 
-						.preview {
-							margin-bottom: 10px;
-							flex: 1;
-						}
-					}
-				}
-			}
-		}
+            .preview {
+              margin-bottom: 10px;
+              flex: 1;
+            }
+          }
+        }
+      }
+    }
 
-		.bottom {
-			-webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
-			box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
-			padding: 20px;
-			margin: 10px 20px;
-		}
+    .bottom {
+      -webkit-box-shadow: 2px 4px 10px 1px rgba(0, 0, 0, 0.47);
+      box-shadow: 2px 4px 10px 1px rgba(201, 201, 201, 0.47);
+      padding: 20px;
+      margin: 10px 20px;
+    }
 
-		.title {
-			font-size: 16px;
-			color: lightgray;
-			margin-bottom: 20px;
-		}
-	}
+    .title {
+      font-size: 16px;
+      color: lightgray;
+      margin-bottom: 20px;
+    }
+  }
 }

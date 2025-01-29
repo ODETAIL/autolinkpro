@@ -46,6 +46,18 @@
     }
   }
 
+  .datagrid {
+    .MuiSvgIcon-root,
+    .MuiDataGrid-columnHeader--sortable {
+      color: white;
+    }
+
+    p {
+      color: white;
+      font-weight: 700;
+    }
+  }
+
   .cellCodeDropdown {
     background: transparent;
     color: grey;

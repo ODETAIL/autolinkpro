@@ -1,17 +1,18 @@
 import "./new.scss";
 import Sidebar from "../../components/sidebar/Sidebar";
 import Navbar from "../../components/navbar/Navbar";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   collection,
   doc,
+  getDoc,
   getDocs,
   serverTimestamp,
   setDoc,
   writeBatch,
 } from "firebase/firestore";
 import { db } from "../../firebase";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import {
   getCustomerByName,
   initializeInvoiceCounter,
@@ -31,12 +32,43 @@ import ServiceDetails from "../../components/services/ServiceDetails";
 
 const NewInvoice = ({ inputs, title, collectionName }) => {
   const [data, setData] = useState({ start: null, end: null });
-  const [customerName, setCustomerName] = useState(""); // Store customer name
-  const [customerId, setCustomerId] = useState(""); // Store customer ID after creation or fetch
+  const [customerName, setCustomerName] = useState("");
+  const [customerId, setCustomerId] = useState("");
   const [customerData, setCustomerData] = useState({});
   const [services, setServices] = useState([]);
   const navigate = useNavigate();
   const { selectedCompany } = useCompanyContext();
+  const { search } = useLocation();
+  const query = new URLSearchParams(search);
+  const optionalCustomerId = query.get("customerId");
+
+  useEffect(() => {
+    if (optionalCustomerId) {
+      const fetchData = async () => {
+        try {
+          const docSnap = await getDoc(
+            doc(
+              db,
+              selectedCompany,
+              "management",
+              "customers",
+              optionalCustomerId
+            )
+          );
+          if (docSnap.exists()) {
+            handleCustomerSelect(docSnap.data());
+          } else {
+            console.log("No such document!");
+            setCustomerData({ error: "Document not found" });
+          }
+        } catch (error) {
+          console.error("Error fetching document: ", error);
+        }
+      };
+
+      fetchData();
+    }
+  }, [optionalCustomerId, selectedCompany]);
 
   const handleCustomerSelect = async (customer) => {
     // Set customer name and populate data immediately
@@ -162,7 +194,10 @@ const NewInvoice = ({ inputs, title, collectionName }) => {
             <form onSubmit={handleAdd}>
               <div className="formContent">
                 {/* Customer Name Field */}
-                <CustomerSearch onCustomerSelect={handleCustomerSelect} />
+                <CustomerSearch
+                  onCustomerSelect={handleCustomerSelect}
+                  optionalCustomerName={customerName}
+                />
 
                 {/* Render standard inputs */}
                 {inputs.map((input) => (

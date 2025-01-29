@@ -59,7 +59,7 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
             )
           );
           if (docSnap.exists()) {
-            setCustomerData(docSnap.data());
+            handleCustomerSelect(docSnap.data());
           } else {
             console.log("No such document!");
             setCustomerData({ error: "Document not found" });
@@ -208,7 +208,10 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
             <form onSubmit={handleAdd}>
               <div className="formContent">
                 {/* Customer Name Field */}
-                <CustomerSearch onCustomerSelect={handleCustomerSelect} />
+                <CustomerSearch
+                  onCustomerSelect={handleCustomerSelect}
+                  optionalCustomerName={customerName}
+                />
 
                 {/* Render standard inputs */}
                 {inputs.map((input) => (
@@ -216,7 +219,12 @@ const NewAppointment = ({ inputs, title, collectionName }) => {
                     <label>{input.label}</label>
                     {input.id === "start" || input.id === "end" ? (
                       <DatePicker
-                        selected={data[input.id]}
+                        selected={
+                          data[input.id] &&
+                          !isNaN(new Date(data[input.id]).getTime())
+                            ? new Date(data[input.id])
+                            : null
+                        }
                         className="datePicker"
                         onChange={(date) =>
                           setData((prevData) => ({

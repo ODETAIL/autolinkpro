@@ -14,7 +14,12 @@ import { invoiceCustomerViewColumns } from "../../datatablesource";
 import { useCompanyContext } from "../../context/CompanyContext";
 import { TextField } from "@mui/material";
 
-const Datatable = ({ collectionName, columns, customerId }) => {
+const Datatable = ({
+  collectionName,
+  columns,
+  customerId,
+  isCustomerInvoice,
+}) => {
   const [data, setData] = useState([]);
   const [searchQuery, setSearchQuery] = useState(""); // State for search input
   const { selectedCompany } = useCompanyContext();
@@ -28,11 +33,12 @@ const Datatable = ({ collectionName, columns, customerId }) => {
   useEffect(() => {
     // LISTEN (REALTIME)
     const isEmployeeCollection = collectionName === "employees"; // Assume "employees" is the global collection name
+
     const docRef = isEmployeeCollection
       ? "employees" // Global path for employees
       : customerId
-      ? `${selectedCompany}/management/${collectionName}/${customerId}/invoices` // Company-specific path for customer invoices
-      : `${selectedCompany}/management/${collectionName}`; // Company-specific path for other collections
+        ? `${selectedCompany}/management/${collectionName}/${customerId}/invoices` // Company-specific path for customer invoices
+        : `${selectedCompany}/management/${collectionName}`; // Company-specific path for other collections
     const unsub = onSnapshot(
       collection(db, docRef),
       (snapShot) => {
@@ -131,13 +137,13 @@ const Datatable = ({ collectionName, columns, customerId }) => {
           return (
             <div className="cellAction">
               <Link
-                to={`/${collectionName}/view/${params.row.id}`}
+                to={`/${isCustomerInvoice ? "invoices" : collectionName}/view/${params.row.id}`}
                 style={{ textDecoration: "none" }}
               >
                 <div className="viewButton">View</div>
               </Link>
               <Link
-                to={`/${collectionName}/edit/${params.row.id}`}
+                to={`/${isCustomerInvoice ? "invoices" : collectionName}/edit/${params.row.id}`}
                 style={{ textDecoration: "none" }}
               >
                 <div className="editButton">Edit</div>
@@ -152,7 +158,7 @@ const Datatable = ({ collectionName, columns, customerId }) => {
           );
         } else {
           <Link
-            to={`/${collectionName}/view/${params.row.id}`}
+            to={`/${isCustomerInvoice ? "invoices" : collectionName}/view/${params.row.id}`}
             style={{ textDecoration: "none" }}
           >
             <div className="viewButton">View</div>

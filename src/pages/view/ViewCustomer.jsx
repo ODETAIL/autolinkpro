@@ -16,7 +16,6 @@ const ViewCustomer = ({ collectionName }) => {
   const { customerId } = useParams();
   const { selectedCompany } = useCompanyContext();
 
-  console.log(collectionName);
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -43,6 +42,14 @@ const ViewCustomer = ({ collectionName }) => {
       navigate(`/appointments/new?customerId=${customerId}`); // Pass customerId as a query parameter
     } else {
       console.error("Customer ID is required to create a new appointment.");
+    }
+  };
+
+  const handleAddInvoice = () => {
+    if (customerId) {
+      navigate(`/invoices/new?customerId=${customerId}`); // Pass customerId as a query parameter
+    } else {
+      console.error("Customer ID is required to create a new invoice.");
     }
   };
 
@@ -115,18 +122,27 @@ const ViewCustomer = ({ collectionName }) => {
         <div className="bottom">
           <div className="header">
             <h1 className="title">Last Transactions</h1>
-            <button
-              className="addAppointmentButton"
-              onClick={handleAddAppointment}
-            >
-              New Appointment
-            </button>
+            <div className="">
+              <button
+                className="addAppointmentButton"
+                onClick={handleAddAppointment}
+              >
+                New Appointment
+              </button>
+              <button
+                className="addAppointmentButton"
+                onClick={handleAddInvoice}
+              >
+                New Invoice
+              </button>
+            </div>
           </div>
 
           <List
             collectionName={collectionName}
             columns={invoiceColumns}
             customerId={customerId}
+            isCustomerInvoice={true}
           />
         </div>
       </div>

@@ -1,102 +1,102 @@
 .app.dark {
-	background-color: #111;
-	color: rgb(156, 156, 156);
-	.MuiCheckbox-root {
-		color: rgb(156, 156, 156);
-	}
+  background-color: #111;
+  color: rgb(156, 156, 156);
+  .MuiCheckbox-root {
+    color: rgb(156, 156, 156);
+  }
 
-	.chartGrid {
-		stroke: rgba(228, 228, 228, 0.219);
-	}
+  .chartGrid {
+    stroke: rgba(228, 228, 228, 0.219);
+  }
 
-	.table {
-		background-color: #111;
+  .table {
+    background-color: #111;
 
-		.tableCell {
-			color: gray;
-		}
-	}
+    .tableCell {
+      color: gray;
+    }
+  }
 
-	.navbar {
-		color: #999;
-		border-color: #333;
+  .navbar {
+    color: #999;
+    border-color: #333;
 
-		.search {
-			border-color: gray;
-		}
-	}
+    .search {
+      border-color: gray;
+    }
+  }
 
-	.sidebar {
-		background-color: #111;
-		border-color: #333;
+  .sidebar {
+    background-color: #111;
+    border-color: #333;
 
-		.top {
-			.company-dropdown {
-				background: transparent;
-				color: #3f4cffd8;
-				font-size: 20px;
-				font-weight: bold;
-				text-transform: uppercase;
-				border: none;
-				outline: none;
-				padding: 10px;
-				cursor: pointer;
+    .top {
+      .company-dropdown {
+        background: transparent;
+        color: #3f4cffd8;
+        font-size: 20px;
+        font-weight: bold;
+        text-transform: uppercase;
+        border: none;
+        outline: none;
+        padding: 10px;
+        cursor: pointer;
 
-				/* Style individual options to match the dropdown */
-				option {
-					background-color: #333; /* or change to preferred color */
-					font-weight: bold;
-					font-size: 20px;
-					color: #999;
-				}
-			}
+        /* Style individual options to match the dropdown */
+        option {
+          background-color: #333; /* or change to preferred color */
+          font-weight: bold;
+          font-size: 20px;
+          color: #999;
+        }
+      }
 
-			.logo {
-				color: #999;
-			}
-		}
-		hr {
-			border-color: #333;
-		}
+      .logo {
+        color: #999;
+      }
+    }
+    hr {
+      border-color: #333;
+    }
 
-		ul {
-			li {
-				&:hover {
-					background-color: #333;
-				}
+    ul {
+      li {
+        &:hover {
+          background-color: #333;
+        }
 
-				.icon {
-					color: #999;
-				}
-			}
-		}
-	}
+        .icon {
+          color: #999;
+        }
+      }
+    }
+  }
 
-	.datatable {
-		.datagrid {
-			color: gray;
-			border: none;
+  .datatable {
+    .datagrid {
+      color: gray;
+      border: none;
 
-			.viewButton {
-				color: orange;
-				border: 1px solid orange;
-			}
-			.editButton {
-				color: blue;
-				border: 1px solid blue;
-			}
-			.deleteButton {
-				color: red;
-				border: 1px solid red;
-			}
-			.cellWithStatus {
-				border: none;
-			}
-		}
-	}
+      .viewButton {
+        color: orange;
+        border: 1px solid orange;
+      }
+      .editButton {
+        color: blue;
+        border: 1px solid blue;
+      }
+      .deleteButton {
+        color: red;
+        border: 1px solid red;
+      }
+      .cellWithStatus {
+        border: none;
+      }
+    }
+  }
 
-	input {
-		background-color: transparent;
-		color: #999;
-	}
+  input {
+    background-color: transparent;
+    color: #999;
+  }
 }

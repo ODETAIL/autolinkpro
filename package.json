@@ -59,6 +59,8 @@
 	},
 	"devDependencies": {
 		"@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-		"env-cmd": "^10.1.0"
+		"@react-email/components": "0.0.32",
+		"env-cmd": "^10.1.0",
+		"react-email": "3.0.6"
 	}
 }
